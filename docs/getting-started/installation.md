@@ -38,7 +38,7 @@ rigour --version
 You should see output like:
 
 ```
-rigour v2.1.0
+rigour v1.6.0
 ```
 
 ## Next Steps
