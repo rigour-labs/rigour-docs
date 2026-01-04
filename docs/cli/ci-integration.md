@@ -20,38 +20,70 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-## GitLab CI
+## Advanced CI Patterns
+
+### 🦊 GitLab CI/CD
+Rigour integrates natively with GitLab's job system. Ensure you use the `node:20` image or higher.
 
 ```yaml
 # .gitlab-ci.yml
-rigour:
+rigour-audit:
+  stage: test
   image: node:20
   script:
     - npm ci
-    - npx rigour check --ci
-  only:
-    - merge_requests
+    - npx @rigour-labs/cli check --ci --json > rigour-report.json || true
+    - # Fail the job if the status is FAIL in the JSON
+    - if [ "$(grep -o '"status":"FAIL"' rigour-report.json)" ]; then exit 1; fi
+  artifacts:
+    when: always
+    paths:
+      - rigour-report.json
+      - rigour-fix-packet.json
 ```
 
-## Pre-commit Hook
+### 🏗️ Jenkins (Pipeline)
+For Jenkins, we recommend using the `sh` step with a return status check.
 
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Rigour Audit') {
+            steps {
+                script {
+                    def status = sh(script: "npx @rigour-labs/cli check --ci", returnStatus: true)
+                    if (status == 1) {
+                        unstable("Rigour: Engineering violations found.")
+                    } else if (status > 1) {
+                        error("Rigour: System/Config error occurred.")
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+## Mechanical Review: Parsing the Report
+
+When running in `--json` mode, Rigour produces a rich diagnostic object. You can use `jq` to create custom CI dashboard messages.
+
+### Example: Count failures per file
 ```bash
-# .husky/pre-commit
-#!/bin/sh
-npx rigour check --ci
+cat rigour-report.json | jq '.failures | group_by(.files[0]) | map({file: .[0].files[0], count: length})'
 ```
 
-## CI Flags
+### Example: Extract all hints for a Slack notification
+```bash
+cat rigour-report.json | jq -r '.failures[] | "🚨 \(.title): \(.hint)"'
+```
 
-| Flag | Purpose |
-|------|---------|
-| `--ci` | Enables strict mode, non-zero exit on failure |
-| `--json` | Machine-readable output for parsing |
+---
 
-## Exit Codes in CI
-
-Rigour uses standard exit codes for CI compatibility:
-
-- **0**: All checks passed ✅
-- **1**: Validation failed ❌
-- **2**: Configuration error ⚠️
+## Security: The "Snapshot Guard"
+In a shared CI environment, Rigour verifies the **Integrity of the Change**.
+- **`max_files_changed_per_cycle`**: If a PR touches more than 10 files (default), Rigour identifies this as "high-risk" and requires manual override or refactoring.
+- **`protected_paths`**: Rigour prevents AI agents from modifying sensitive CI infrastructure files (like `.github/` or `rigour.yml` itself), even if the agent has filesystem access.

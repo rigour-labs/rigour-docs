@@ -20,9 +20,45 @@ Or install globally:
 npm install -g @rigour-labs/mcp
 ```
 
-## Configuration
+---
 
-Add Rigour to your MCP client configuration (e.g., Claude Desktop or Cursor):
+## Integration Cookbook: Client Recipes
+
+Rigour can be integrated with any MCP-compliant client. Below are optimized configuration recipes for the most popular AI agentic tools.
+
+### 🤖 Claude Code
+Claude Code consumes MCP servers via its internal config.
+
+```bash
+# Add Rigour to Claude Code
+claude mcp add rigour npx -y @rigour-labs/mcp
+```
+
+### 🖱️ Cursor
+Cursor can be configured globally or per-project.
+
+**Global setup:**
+1. Open **Cursor Settings** > **Features** > **MCP**.
+2. Click **+ Add New MCP Server**.
+3. Name: `Rigour`
+4. Type: `command`
+5. Command: `npx -y @rigour-labs/mcp`
+
+**Project-specific setup:**
+Add this to your `.cursor/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "rigour": {
+      "command": "npx",
+      "args": ["-y", "@rigour-labs/mcp"]
+    }
+  }
+}
+```
+
+### 🛠️ Cline / Roo Code
+Cline uses a dedicated settings file. Add this to your `cline_mcp_settings.json`:
 
 ```json
 {
@@ -34,6 +70,30 @@ Add Rigour to your MCP client configuration (e.g., Claude Desktop or Cursor):
   }
 }
 ```
+
+### 🌀 Antigravity
+If you are using Antigravity, Rigour is often pre-configured or can be added via the tool-call interface by pointing to the binary:
+
+```json
+{
+  "command": "npx",
+  "args": ["-y", "@rigour-labs/mcp"]
+}
+```
+
+### 🛰️ Gemini CLI / Firebase Genkit
+For programmatic usage or CLI wrappers that support MCP:
+
+```typescript
+import { McpClient } from '@modelcontextprotocol/sdk';
+
+const client = new McpClient({
+  command: 'npx',
+  args: ['-y', '@rigour-labs/mcp']
+});
+```
+
+---
 
 ## Available Tools
 

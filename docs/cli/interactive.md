@@ -4,8 +4,22 @@ sidebar_position: 3
 
 # Interactive Tools
 
-Rigour includes interactive commands to help you set up and troubleshoot your project's engineering standards.
+Rigour includes interactive commands and flags to help you set up and troubleshoot your project's engineering standards.
 
+## `rigour check --interactive`
+
+The "Human Mode" of Rigour. It provides rich, colorful terminal output designed for manual code reviews and local debugging.
+
+```bash
+npx @rigour-labs/cli check --interactive
+```
+
+### Key Features:
+- **Visual Callouts**: Important violations are highlighted with expert hints.
+- **Trace Visualization**: Shows the exact logic path (e.g., nesting levels) that triggered a failure.
+- **Immediate Resolution**: Provides actionable "Next Steps" for every violation.
+
+---
 ## `rigour setup`
 
 The automated project bootstrap command.

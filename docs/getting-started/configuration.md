@@ -1,91 +1,61 @@
----
-sidebar_position: 3
----
-
 # Configuration
 
-Customize Rigour for your project with `.rigour.yaml`.
+Customize Rigour for your project with `rigour.yml`.
 
-## Configuration File
+## Minimal Configuration
 
-Create `.rigour.yaml` in your project root:
+Create a `rigour.yml` in your project root. Rigour uses sensible defaults, but a basic config helps define your project's identity:
 
 ```yaml
-# .rigour.yaml
-version: "2"
+# rigour.yml
+version: 1
+preset: api      # api, ui, infra, or data
+paradigm: oop    # oop, functional, or minimal
 
-# Protected paths that AI should never modify
-protected_paths:
-  - ".env*"
-  - "*.lock"
-  - ".git/**"
-  - "node_modules/**"
-
-# Maximum files that can be changed in one fix
-max_files_touched: 10
-
-# Language-specific settings
-presets:
-  - typescript
-  - react
-
-# Custom AST gates
+# Quality Gates
 gates:
-  - no-eval
-  - no-process-env-write
+  max_file_lines: 500
+  ast:
+    complexity: 10
+    max_params: 5
 ```
 
-## Configuration Options
+## Configuration Core
 
-### `protected_paths`
-
-Glob patterns for files that should never be modified by AI agents.
-
-```yaml
-protected_paths:
-  - ".env*"           # Environment files
-  - "package-lock.json"  # Lock files
-  - "**/*.min.js"     # Minified files
-```
-
-### `max_files_touched`
-
-Maximum number of files that can be changed in a single fix packet.
-
-```yaml
-max_files_touched: 10  # Default: 10
-```
-
-### `presets`
-
-Enable language-specific validation rules.
-
-```yaml
-presets:
-  - typescript    # TypeScript AST validation
-  - react         # React-specific patterns
-  - python        # Python syntax checking
-```
-
-### `gates`
-
-Custom validation gates for your project.
+### 1. Safety Rails
+Prevent AI agents from touching critical files.
 
 ```yaml
 gates:
-  - no-eval           # Block eval() usage
-  - no-console-log    # No console.log in production
+  safety:
+    protected_paths:
+      - ".github/**"
+      - "rigour.yml"
+      - "*.lock"
+    max_files_changed_per_cycle: 10
 ```
 
-## Environment Variables
+### 2. Universal AST SME
+Enable structural analysis for your specific language. Rigour automatically detects your language, but you can tune the expert logic:
 
-Override config via environment:
+```yaml
+gates:
+  ast:
+    complexity: 10      # Max Cognitive Load
+    max_function_lines: 50
+```
 
-```bash
-RIGOUR_MAX_FILES=5 rigour check
+### 3. Quality Handshake (SAST+DAST)
+Bridge the gap between code structure and tests.
+
+```yaml
+gates:
+  coverage:
+    risk_adjusted: true # Requires high coverage for complex code
 ```
 
 ## Next Steps
 
-- [CLI Commands](/cli/commands) - See all available commands
-- [Presets](/concepts/presets) - Learn about language presets
+- **[Full Reference](/reference/configuration)** - Complete schema specification.
+- **[SME Cookbooks](/examples/sme-cookbooks)** - Advanced patterns for Go, Python, and Java.
+- **[CLI Commands](/cli/commands)** - See all available commands.

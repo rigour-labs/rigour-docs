@@ -44,6 +44,14 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Expert Guides & SME Cookbooks',
+      items: [
+        'examples/sme-cookbooks',
+        'examples/quality-handshake',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Reference',
       items: [
         'reference/configuration',

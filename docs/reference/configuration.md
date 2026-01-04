@@ -78,23 +78,97 @@ Project-level preset that defines default gate thresholds.
 
 ---
 
-### `gates.ast`
+---
 
-**Type:** `object`
+### `architecture.boundaries`
 
-Configures syntax-aware gates.
+**Type:** `array`  
+**Description:** Enforce strict layering rules by forbidding specific import paths based on the file's location.
 
-| Option | Default | Description |
-|:---|:---:|:---|
-| `complexity` | `10` | Cyclomatic complexity limit |
-| `max_params` | `5` | Max arguments per function |
-| `max_function_lines` | `50` | Max lines per function |
+```yaml
+gates:
+  architecture:
+    boundaries:
+      - from: "src/api/**"
+        to: "src/ui/**"
+        mode: "deny"
+      - from: "packages/core/**"
+        to: "packages/cli/**"
+        mode: "deny"
+```
+
+| Property | Description |
+|:---|:---|
+| `from` | Glob pattern representing the source file(s). |
+| `to` | Glob pattern representing the forbidden import/path. |
+| `mode` | Currently only `deny` is supported for strict isolation. |
+
+**How it works**: Rigour's AST engine scans your import declarations. If a file matching the `from` pattern attempts to import a module matching the `to` pattern, the audit fails. This is essential for preventing circular dependencies and leaky abstractions in large monorepos.
 
 ---
 
-## Environment Variables
+### `gates.dependencies.forbid`
 
-| Variable | Description |
-|----------|-------------|
-| `RIGOUR_CI` | Enable CI mode (strict exit codes) |
-| `RIGOUR_JSON` | Output report as JSON |
+**Type:** `string[]`  
+**Description:** Prevent specific third-party packages from being added to your project.
+
+```yaml
+gates:
+  dependencies:
+    forbid:
+      - "lodash" # Use native ES6 instead
+      - "axios"  # Use fetch
+```
+
+---
+
+### `gates.ast`
+
+**Type:** `object`
+**Description:** Configures syntax-aware gates for code quality.
+
+| Option | Default | Description |
+|:---|:---:|:---|
+| `complexity` | `10` | **SME Logic**: Cognitive complexity limit (cyclomatic + nesting depth). |
+| `max_methods` | `10` | Max methods allowed per class. |
+| `max_params` | `5` | Max arguments allowed per function signature. |
+| `max_function_lines` | `50` | Max lines of code per function body. |
+
+---
+
+### `gates.coverage`
+**Description**: Enables the "Quality Handshake" between static structural risks and dynamic runtime coverage.
+
+| Option | Type | Description |
+|:---|:---:|:---|
+| `risk_adjusted` | `boolean` | If true, complex files (complexity > 10) require >80% coverage. |
+
+---
+
+## Universal Language Support
+Rigour provides built-in, syntax-aware AST analysis for:
+**TypeScript, JavaScript, Go, Rust, Python, Java, C#, C, C++, PHP, Swift, and Kotlin.**
+
+---
+
+## Custom Command Gates (Agnosticism)
+
+The most powerful feature of Rigour is its ability to wrap **any** third-party tool as a first-class quality gate. Use this to extend Rigour beyond its built-in SME logic:
+
+```yaml
+commands:
+  # Wrap security scanners
+  security: "trivy fs ."
+  
+  # Wrap custom domain rules
+  custom: "./scripts/my-logic.sh"
+```
+
+### The "Universal Handshake"
+When you define a command:
+1.  **Execution**: Rigour runs the command in your project's `cwd`.
+2.  **Validation**: If the command exits with **Code 0**, it `PASSES`. If it exits with any other code, it `FAILS`.
+3.  **Feedback**: The `stderr` or `stdout` from your tool is automatically captured and placed into the **Fix Packet**.
+4.  **Refinement**: AI agents will read your tool's raw output and attempt to fix the code to make the gate pass.
+
+This allows you to bring your existing enterprise toolchain into the Rigour supervisor loop.

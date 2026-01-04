@@ -20,8 +20,8 @@ rigour check [options]
 |------|-------------|
 | `--ci` | CI mode with strict exit codes |
 | `--json` | Output results as JSON |
+| `--interactive` | **New**: Rich, interactive terminal output |
 | `--config <path>` | Custom config file path |
-| `--verbose` | Detailed output |
 
 ### Examples
 
@@ -120,13 +120,21 @@ When you use `rigour run`, Rigour manages a stateful refinement loop:
 
 ---
 
-## Technical Reference: Exit Codes
+---
 
-Rigour uses standardized exit codes for reliable CI/CD and automation.
+## Technical Reference: The Quality Score
+
+Rigour calculates a **Total Quality Score (0-100)** for every audit run. This score is included in the JSON report and displayed in human-readable summaries.
+
+### How it's calculated:
+- **Base Score**: 100
+- **Structural Violations**: -5 points per failure (e.g., SME_COGNITIVE_LOAD).
+- **Security Violations**: -10 points per failure (e.g., SME_SECURITY_SINK).
+- **Dynamic Violations**: -15 points per blind spot (e.g., DYNAMIC_COVERAGE_LOW).
 
 | Code | Meaning | Context |
 |:---:|:---|:---|
-| `0` | **PASS** | All quality gates were satisfied. |
+| `0` | **PASS** | All quality gates were satisfied (Score > Threshold). |
 | `1` | **FAIL** | One or more engineering violations were found. |
 | `2` | **CONFIG_ERROR** | `rigour.yml` is missing or invalid. |
 | `3` | **INTERNAL_ERROR** | Unexpected diagnostic or filesystem failure. |
