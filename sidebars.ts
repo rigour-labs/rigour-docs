@@ -18,7 +18,9 @@ const sidebars: SidebarsConfig = {
       label: 'CLI',
       items: [
         'cli/commands',
+        'cli/exit-codes',
         'cli/ci-integration',
+        'cli/interactive',
       ],
     },
     {
@@ -33,6 +35,8 @@ const sidebars: SidebarsConfig = {
       label: 'Concepts',
       items: [
         'concepts/philosophy',
+        'concepts/modes',
+        'concepts/workflows',
         'concepts/fix-packet',
         'concepts/ast-gates',
         'concepts/presets',
