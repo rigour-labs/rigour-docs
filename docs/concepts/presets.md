@@ -84,7 +84,7 @@ presets:
 Rigour can auto-detect which presets to use based on your project:
 
 ```bash
-rigour init --auto
+npx @rigour-labs/cli init
 ```
 
-This scans `package.json`, file extensions, and project structure.
+This scans `package.json`, file extensions, and project structure to suggest the best configuration.

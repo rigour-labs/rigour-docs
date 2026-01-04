@@ -9,7 +9,7 @@ Get your first AI code review running in 60 seconds.
 ## Initialize Rigour
 
 ```bash
-npx rigour init
+npx @rigour-labs/cli init
 ```
 
 This creates a `.rigour.yaml` configuration file with sensible defaults.
@@ -17,7 +17,7 @@ This creates a `.rigour.yaml` configuration file with sensible defaults.
 ## Run Your First Check
 
 ```bash
-npx rigour check
+npx @rigour-labs/cli check
 ```
 
 Rigour will analyze your staged changes and validate them against safety rules.

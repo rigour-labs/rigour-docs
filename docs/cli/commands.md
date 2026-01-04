@@ -27,13 +27,13 @@ rigour check [options]
 
 ```bash
 # Basic check
-rigour check
+npx @rigour-labs/cli check
 
 # CI pipeline
-rigour check --ci --json
+npx @rigour-labs/cli check --ci --json
 
 # Custom config
-rigour check --config ./custom-rigour.yaml
+npx @rigour-labs/cli check --config ./custom-rigour.yaml
 ```
 
 ---
@@ -43,7 +43,7 @@ rigour check --config ./custom-rigour.yaml
 Initialize Rigour in your project.
 
 ```bash
-rigour init [options]
+npx @rigour-labs/cli init [options]
 ```
 
 ### Options
@@ -57,10 +57,10 @@ rigour init [options]
 
 ```bash
 # Default initialization
-rigour init
+npx @rigour-labs/cli init
 
 # With TypeScript preset
-rigour init --preset typescript
+npx @rigour-labs/cli init --preset typescript
 ```
 
 ---
@@ -70,7 +70,7 @@ rigour init --preset typescript
 Get detailed explanation of validation results.
 
 ```bash
-rigour explain [options]
+npx @rigour-labs/cli explain [options]
 ```
 
 ### Options
@@ -84,18 +84,51 @@ rigour explain [options]
 
 ```bash
 # Explain last check
-rigour explain
+npx @rigour-labs/cli explain
 
 # Analyze fix packet
-rigour explain --fix-packet ./fix.json
+npx @rigour-labs/cli explain --fix-packet ./fix.json
 ```
 
 ---
 
-## Exit Codes
+## `rigour run`
 
-| Code | Meaning |
-|------|---------|
-| `0` | All checks passed |
-| `1` | Validation failed |
-| `2` | Configuration error |
+The **Supervisor Loop**. Executes an AI agent and automatically iterates until quality gates pass.
+
+```bash
+npx @rigour-labs/cli run [options] -- <agent-command>
+```
+
+### The Iterative Refinement Cycle
+When you use `rigour run`, Rigour manages a stateful refinement loop:
+1.  **Deploy**: Your agent (e.g., Claude Code) is executed with your prompt.
+2.  **Snapshot**: Rigour monitors file changes in real-time.
+3.  **Audit**: Quality gates are checked against the resulting state.
+4.  **Refine**: If gates fail, Rigour generates a `rigour-fix-packet.json` (Diagnostic) and automatically re-invokes the agent to fix the violations.
+5.  **Finish**: The loop exits when all gates `PASS` or the maximum iterations are reached.
+
+### Options
+
+| Flag | Default | Description |
+|:---|:---:|:---|
+| `--iterations <n>` | `3` | Maximum number of refinement cycles |
+| `--fail-fast` | `false` | Terminate instantly on the first violation |
+
+### Safety Rails
+`rigour run` prevents "agent explosions" by monitoring the cycle delta. If an agent changes more than `max_files_changed_per_cycle` (set in `rigour.yml`), the loop is instantly aborted.
+
+---
+
+## Technical Reference: Exit Codes
+
+Rigour uses standardized exit codes for reliable CI/CD and automation.
+
+| Code | Meaning | Context |
+|:---:|:---|:---|
+| `0` | **PASS** | All quality gates were satisfied. |
+| `1` | **FAIL** | One or more engineering violations were found. |
+| `2` | **CONFIG_ERROR** | `rigour.yml` is missing or invalid. |
+| `3` | **INTERNAL_ERROR** | Unexpected diagnostic or filesystem failure. |
+
+See the [Exit Codes Guide](/cli/exit-codes) for advanced usage.

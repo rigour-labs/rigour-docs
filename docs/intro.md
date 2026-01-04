@@ -19,13 +19,19 @@ Rigour is a lightning-fast, zero-config code review tool designed specifically f
 ## Quick Install
 
 ```bash
-npm install -g rigour
+npm install -g @rigour-labs/cli
 ```
 
-Or use directly with npx:
+## Two Modes of Operation
+
+Rigour works as either an **Advisor** (proactive validation via MCP) or a **Supervisor** (automated loop via CLI). 
+
+[Learn about Modes →](/concepts/modes)
+
+## Use directly with npx
 
 ```bash
-npx rigour check
+npx @rigour-labs/cli check
 ```
 
 ## What's Next?

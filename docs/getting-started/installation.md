@@ -14,19 +14,19 @@ Get Rigour set up in your project in under a minute.
 ## Install Globally
 
 ```bash
-npm install -g rigour
+npm install -g @rigour-labs/cli
 ```
 
 ## Install as Dev Dependency
 
 ```bash
-npm install -D rigour
+npm install -D @rigour-labs/cli
 ```
 
 ## Use with npx (No Install)
 
 ```bash
-npx rigour check
+npx @rigour-labs/cli check
 ```
 
 ## Verify Installation

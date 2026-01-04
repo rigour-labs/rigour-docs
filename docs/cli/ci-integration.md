@@ -1,39 +1,25 @@
+```
 ---
 sidebar_position: 2
 ---
 
-# CI Integration
+# Production CI/CD Integration
 
-Integrate Rigour into your CI/CD pipeline.
+Rigour is designed to be the final gate in your CI/CD pipeline, ensuring that NO code—human or AI—reaches production without passing engineering audits.
 
-## GitHub Actions
+## GitHub Actions: The "Rigour Gate"
+
+Add this workflow to your `.github/workflows/rigour.yml` to enforce standards on every PR.
 
 ```yaml
-# .github/workflows/rigour.yml
-name: Rigour Check
-
-on:
-  pull_request:
-    branches: [main]
+name: Rigour Quality Gate
+on: [pull_request]
 
 jobs:
-  rigour:
+  audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Run Rigour
-        run: npx rigour check --ci --json
-```
-
 ## GitLab CI
 
 ```yaml
