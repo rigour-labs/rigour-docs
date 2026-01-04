@@ -1,0 +1,103 @@
+/**
+ * Rigour Docs - Custom CSS
+ * LiteLLM-inspired green-on-dark theme
+ */
+
+/* Emerald Green Theme */
+:root {
+  --ifm-color-primary: #10B981;
+  --ifm-color-primary-dark: #0EA572;
+  --ifm-color-primary-darker: #0D9968;
+  --ifm-color-primary-darkest: #0B7D55;
+  --ifm-color-primary-light: #34D399;
+  --ifm-color-primary-lighter: #6EE7B7;
+  --ifm-color-primary-lightest: #A7F3D0;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(16, 185, 129, 0.1);
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Dark Mode - Primary Experience */
+[data-theme='dark'] {
+  --ifm-color-primary: #10B981;
+  --ifm-color-primary-dark: #0EA572;
+  --ifm-color-primary-darker: #0D9968;
+  --ifm-color-primary-darkest: #0B7D55;
+  --ifm-color-primary-light: #34D399;
+  --ifm-color-primary-lighter: #6EE7B7;
+  --ifm-color-primary-lightest: #A7F3D0;
+  --ifm-background-color: #0f172a;
+  --ifm-background-surface-color: #1e293b;
+  --docusaurus-highlighted-code-line-bg: rgba(16, 185, 129, 0.2);
+}
+
+/* Navbar styling */
+.navbar {
+  background: var(--ifm-background-color);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+}
+
+.navbar__title {
+  font-weight: 700;
+}
+
+/* Sidebar active link */
+.menu__link--active {
+  color: var(--ifm-color-primary) !important;
+  font-weight: 600;
+}
+
+/* Code blocks */
+.prism-code {
+  border-radius: 8px;
+}
+
+/* Hero section enhancements */
+.hero {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.hero__title {
+  font-size: 3.5rem;
+  font-weight: 800;
+}
+
+/* Feature cards */
+.card {
+  background: var(--ifm-background-surface-color);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+  border-color: var(--ifm-color-primary);
+}
+
+/* Buttons */
+.button--primary {
+  background: var(--ifm-color-primary);
+  border: none;
+}
+
+.button--primary:hover {
+  background: var(--ifm-color-primary-dark);
+}
+
+/* Admonitions */
+.admonition {
+  border-radius: 8px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Footer */
+.footer {
+  background: #0a0f1a;
+  border-top: 1px solid rgba(16, 185, 129, 0.1);
+}
