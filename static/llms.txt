@@ -1,0 +1,1504 @@
+# Rigour Documentation
+
+No Bullshit Code Review for AI Agents
+
+## INTRO
+
+# Welcome to Rigour
+
+**The Engineering Handshake for AI Agents** 🎯
+
+Rigour is a high-fidelity code review and supervision platform designed specifically for the age of agentic coding. It acts as the "bridge" between the creative power of AI models and the strict engineering requirements of production-grade codebases.
+
+## The Core Problem
+AI agents can refactor 1,000 lines of code in seconds, but they often struggle with:
+- **Project Context**: Understanding specific architectural boundaries.
+- **Complexity Rails**: Keeping functions small and manageable.
+- **Safety**: Avoiding modifications to critical CI/CD or infrastructure files.
+
+**Rigour solves this by providing a standardized "Technical Contract" that agents must satisfy before their work is accepted.**
+
+---
+
+## Why Rigour?
+
+- 🛡️ **Universal SME**: Acting as a Subject Matter Expert for **10+ languages** (Go, Rust, Java, Python, C++, and more).
+- 🧠 **Architectural Gates**: Enforces SOLID, DRY, and specialized paradigms (OOP, Functional).
+- 🔄 **Quality Handshake**: Bridges the gap between **Static structure (SAST)** and **Dynamic performance (DAST/IAST)**.
+- 🤝 **Agentic Handshake**: The definitive protocol for reliable AI agent integration.
+
+---
+
+## Two Modes of Operation
+
+Rigour is designed to be used by both Humans (who define the rules) and Agents (who follow them):
+
+1.  **Advisor Mode (MCP)**: For interactive development. The agent proactively asks Rigour for feedback during its task.
+2.  **Supervisor Mode (CLI)**: For headless automation. Rigour wraps the agent and strictly enforces a PASS status before finishing.
+
+[Learn about Operating Modes →](/concepts/modes)
+
+---
+
+## 🌟 What's New in v2.0.0 (The Universal SME Release)
+
+Rigour v2.0.0 is a complete reimagining of the platform, moving from a TypeScript-focused linter to a **Universal Engineering Supervisor**.
+
+- **Universal AST Support**: High-fidelity structural parsing for 10+ languages (Go, Rust, Java, Python, C++, etc.).
+- **Cognitive Complexity Engine**: Nesting-aware complexity measurement.
+- **Dynamic Quality Handshake**: Requiring high test coverage for complex/high-risk code paths.
+- **Interactive Human Reporting**: The new `--interactive` flag for rich terminal visualizations.
+
+---
+
+## Technical Book Structure
+
+This documentation is organized as a technical guide to help you ship faster and safer:
+
+- **[Quick Start](/getting-started/quick-start)**: Your first 100% compliant refactor in 60 seconds.
+- **[SME Cookbooks](/examples/sme-cookbooks)**: Expert patterns for specific languages.
+- **[Quality Handshake](/examples/quality-handshake)**: Bridging SAST and DAST.
+- **[Concepts](/concepts/philosophy)**: The philosophy behind Rigour's "Diagnostic" approach.
+- **[CI/CD Handbook](/cli/ci-integration)**: Production gates for enterprise pipelines.
+
+---
+
+## Installation
+
+```bash
+# Register globally
+npm install -g @rigour-labs/cli
+
+# Run your first check
+rigour check --interactive
+```
+
+
+---
+
+## CLI/CI-INTEGRATION
+
+```
+---
+sidebar_position: 2
+---
+
+# Production CI/CD Integration
+
+Rigour is designed to be the final gate in your CI/CD pipeline, ensuring that NO code—human or AI—reaches production without passing engineering audits.
+
+## GitHub Actions: The "Rigour Gate"
+
+Add this workflow to your `.github/workflows/rigour.yml` to enforce standards on every PR.
+
+```yaml
+name: Rigour Quality Gate
+on: [pull_request]
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+## Advanced CI Patterns
+
+### 🦊 GitLab CI/CD
+Rigour integrates natively with GitLab's job system. Ensure you use the `node:20` image or higher.
+
+```yaml
+# .gitlab-ci.yml
+rigour-audit:
+  stage: test
+  image: node:20
+  script:
+    - npm ci
+    - npx @rigour-labs/cli check --ci --json > rigour-report.json || true
+    - # Fail the job if the status is FAIL in the JSON
+    - if [ "$(grep -o '"status":"FAIL"' rigour-report.json)" ]; then exit 1; fi
+  artifacts:
+    when: always
+    paths:
+      - rigour-report.json
+      - rigour-fix-packet.json
+```
+
+### 🏗️ Jenkins (Pipeline)
+For Jenkins, we recommend using the `sh` step with a return status check.
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Rigour Audit') {
+            steps {
+                script {
+                    def status = sh(script: "npx @rigour-labs/cli check --ci", returnStatus: true)
+                    if (status == 1) {
+                        unstable("Rigour: Engineering violations found.")
+                    } else if (status > 1) {
+                        error("Rigour: System/Config error occurred.")
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+## Mechanical Review: Parsing the Report
+
+When running in `--json` mode, Rigour produces a rich diagnostic object. You can use `jq` to create custom CI dashboard messages.
+
+### Example: Count failures per file
+```bash
+cat rigour-report.json | jq '.failures | group_by(.files[0]) | map({file: .[0].files[0], count: length})'
+```
+
+### Example: Extract all hints for a Slack notification
+```bash
+cat rigour-report.json | jq -r '.failures[] | "🚨 \(.title): \(.hint)"'
+```
+
+---
+
+## Security: The "Snapshot Guard"
+In a shared CI environment, Rigour verifies the **Integrity of the Change**.
+- **`max_files_changed_per_cycle`**: If a PR touches more than 10 files (default), Rigour identifies this as "high-risk" and requires manual override or refactoring.
+- **`protected_paths`**: Rigour prevents AI agents from modifying sensitive CI infrastructure files (like `.github/` or `rigour.yml` itself), even if the agent has filesystem access.
+
+
+---
+
+## CLI/COMMANDS
+
+# CLI Commands
+
+Complete reference for all Rigour CLI commands.
+
+## `rigour check`
+
+Validate staged changes against safety rules.
+
+```bash
+rigour check [options]
+```
+
+### Options
+
+| Flag | Description |
+|------|-------------|
+| `--ci` | CI mode with strict exit codes |
+| `--json` | Output results as JSON |
+| `--interactive` | **New**: Rich, interactive terminal output |
+| `--config <path>` | Custom config file path |
+
+### Examples
+
+```bash
+# Basic check
+npx @rigour-labs/cli check
+
+# CI pipeline
+npx @rigour-labs/cli check --ci --json
+
+# Custom config
+npx @rigour-labs/cli check --config ./custom-rigour.yaml
+```
+
+---
+
+## `rigour init`
+
+Initialize Rigour in your project.
+
+```bash
+npx @rigour-labs/cli init [options]
+```
+
+### Options
+
+| Flag | Description |
+|------|-------------|
+| `--preset <name>` | Use a specific preset |
+| `--force` | Overwrite existing config |
+
+### Examples
+
+```bash
+# Default initialization
+npx @rigour-labs/cli init
+
+# With TypeScript preset
+npx @rigour-labs/cli init --preset typescript
+```
+
+---
+
+## `rigour explain`
+
+Get detailed explanation of validation results.
+
+```bash
+npx @rigour-labs/cli explain [options]
+```
+
+### Options
+
+| Flag | Description |
+|------|-------------|
+| `--fix-packet <path>` | Analyze a specific fix packet |
+| `--verbose` | Include AST details |
+
+### Examples
+
+```bash
+# Explain last check
+npx @rigour-labs/cli explain
+
+# Analyze fix packet
+npx @rigour-labs/cli explain --fix-packet ./fix.json
+```
+
+---
+
+## `rigour run`
+
+The **Supervisor Loop**. Executes an AI agent and automatically iterates until quality gates pass.
+
+```bash
+npx @rigour-labs/cli run [options] -- <agent-command>
+```
+
+### The Iterative Refinement Cycle
+When you use `rigour run`, Rigour manages a stateful refinement loop:
+1.  **Deploy**: Your agent (e.g., Claude Code) is executed with your prompt.
+2.  **Snapshot**: Rigour monitors file changes in real-time.
+3.  **Audit**: Quality gates are checked against the resulting state.
+4.  **Refine**: If gates fail, Rigour generates a `rigour-fix-packet.json` (Diagnostic) and automatically re-invokes the agent to fix the violations.
+5.  **Finish**: The loop exits when all gates `PASS` or the maximum iterations are reached.
+
+### Options
+
+| Flag | Default | Description |
+|:---|:---:|:---|
+| `--iterations <n>` | `3` | Maximum number of refinement cycles |
+| `--fail-fast` | `false` | Terminate instantly on the first violation |
+
+### Safety Rails
+`rigour run` prevents "agent explosions" by monitoring the cycle delta. If an agent changes more than `max_files_changed_per_cycle` (set in `rigour.yml`), the loop is instantly aborted.
+
+---
+
+---
+
+## Technical Reference: The Quality Score
+
+Rigour calculates a **Total Quality Score (0-100)** for every audit run. This score is included in the JSON report and displayed in human-readable summaries.
+
+### How it's calculated:
+- **Base Score**: 100
+- **Structural Violations**: -5 points per failure (e.g., SME_COGNITIVE_LOAD).
+- **Security Violations**: -10 points per failure (e.g., SME_SECURITY_SINK).
+- **Dynamic Violations**: -15 points per blind spot (e.g., DYNAMIC_COVERAGE_LOW).
+
+| Code | Meaning | Context |
+|:---:|:---|:---|
+| `0` | **PASS** | All quality gates were satisfied (Score > Threshold). |
+| `1` | **FAIL** | One or more engineering violations were found. |
+| `2` | **CONFIG_ERROR** | `rigour.yml` is missing or invalid. |
+| `3` | **INTERNAL_ERROR** | Unexpected diagnostic or filesystem failure. |
+
+See the [Exit Codes Guide](/cli/exit-codes) for advanced usage.
+
+
+---
+
+## CLI/EXIT-CODES
+
+# Exit Codes: Deep Dive
+
+Rigour uses standardized exit codes to enable seamless integration with any orchestration layer (CI/CD, K8s, local git hooks).
+
+## Reference Table
+
+| Code | Status | Meaning | Action Required |
+|:---:|:---:|:---|:---|
+| `0` | **PASS** | Audits satisfied. | Safe to merge/deploy. |
+| `1` | **FAIL** | Engineering violations found. | Agent or human must refactor. |
+| `2` | **CONFIG_ERROR** | Invalid `rigour.yml`. | Fix YAML syntax or schema. |
+| `3` | **INTERNAL_ERROR** | System/Filesystem crash. | Check permissions or OOM. |
+
+---
+
+## Technical Details
+
+### Code 1: Audit Failure (Expected)
+This is a **logical failure**. It indicates that the audit logic worked perfectly but the code quality was insufficient.
+- **In CI**: This should block the build.
+- **In Loop**: This triggers a refinement cycle in `rigour run`.
+
+### Code 2: Configuration Error
+Triggered when the Zod-based configuration parser fails.
+- **Common Cause**: Using a string where a number is expected (e.g. `complexity: "high"` instead of `complexity: 10`).
+- **Fix**: Run `rigour guide` to validate your configuration interactively.
+
+### Code 3: Internal Error
+These are unexpected exceptions (e.g., `EMFILE` for too many open files during AST parsing).
+- **Troubleshooting**: If this persistent in CI, ensure your runner has sufficient memory and file handle limits.
+
+---
+
+## Universal Shell Handling
+
+### 🐚 Bash / Zsh (Linux & macOS)
+Use `$?` to capture the last exit code.
+
+```bash
+npx @rigour-labs/cli check --ci
+case $? in
+  0) echo "Audit passed!" ;;
+  1) echo "Violations detected." && exit 1 ;;
+  2) echo "Config is broken." && exit 1 ;;
+  *) echo "Unexpected system error." && exit 1 ;;
+esac
+```
+
+### 🔹 PowerShell (Windows / Azure DevOps)
+Use `$LASTEXITCODE` for reliability in Windows environments.
+
+```powershell
+npx @rigour-labs/cli check --ci
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "Rigour PASS" -ForegroundColor Green
+} elseif ($LASTEXITCODE -eq 1) {
+    Write-Error "Audit Failed: Violations found"
+} else {
+    Write-Error "System Error ($LASTEXITCODE)"
+}
+```
+
+---
+
+## Integration Pro-tip: "The Supervisor Pattern"
+When building custom wrappers around Rigour, differentiate between Code 1 and Codes 2/3.
+- If **Code 1**: Provide the `rigour-fix-packet.json` to the agent.
+- If **Code 2/3**: Fail the pipeline immediately without re-invoking the agent, as a system fix is required.
+
+
+---
+
+## CLI/INTERACTIVE
+
+# Interactive Tools
+
+Rigour includes interactive commands and flags to help you set up and troubleshoot your project's engineering standards.
+
+## `rigour check --interactive`
+
+The "Human Mode" of Rigour. It provides rich, colorful terminal output designed for manual code reviews and local debugging.
+
+```bash
+npx @rigour-labs/cli check --interactive
+```
+
+### Key Features:
+- **Visual Callouts**: Important violations are highlighted with expert hints.
+- **Trace Visualization**: Shows the exact logic path (e.g., nesting levels) that triggered a failure.
+- **Immediate Resolution**: Provides actionable "Next Steps" for every violation.
+
+---
+## `rigour setup`
+
+The automated project bootstrap command.
+
+```bash
+npx @rigour-labs/cli setup
+```
+
+### What it does:
+1.  **Environment Check**: Verifies Node.js, Git, and filesystem permissions.
+2.  **Paradigm Detection**: Analyzes your code to detect if you are using OOP, Functional, or procedural patterns.
+3.  **Config Generation**: Creates a `rigour.yml` tailored to your stack.
+4.  **Handshake Verification**: Ensures that local agents (like Cursor or your shell) can correctly call Rigour tools.
+
+---
+
+## `rigour guide`
+
+Interactive troubleshooting and documentation assistant.
+
+```bash
+npx @rigour-labs/cli guide
+```
+
+### Features:
+- **Violation Help**: Paste a failure ID to get a deep-dive explanation and refactoring examples.
+- **Config Helper**: Helps you tune thresholds (like complexity or file lines) using natural language.
+- **Best Practices**: Provides tailored advice based on your project's specific preset and paradigm.
+
+
+---
+
+## CONCEPTS/AST-GATES
+
+# AST Gates: Technical Reference
+
+Syntax-aware validation for code quality. Rigour uses high-fidelity AST parsing to enforce standards that regular regex-based linters often miss.
+
+## Language Support: Full Parity
+
+Rigour is truly technology-agnostic. We use a hybrid validation engine that combines native structural analysis with universal parsing.
+
+### AST-Aware Languages
+Rigour provides high-fidelity structural checks (Complexity, Nesting, Params) for all major enterprise languages:
+
+| Ecosystem | Language | Parser | Status |
+|:---|:---|:---|:---|
+| **Web** | TypeScript, JS, React | `typescript` API | ✅ Production |
+| **Backend** | Python, Go, Rust | `tree-sitter` (WASM) | ✅ Production |
+| **Enterprise** | Java, C#, C, C++ | `tree-sitter` (WASM) | ✅ Production |
+| **Mobile/Script** | Swift, Kotlin, Ruby, PHP | `tree-sitter` (WASM) | ✅ Production |
+
+> [!TIP]
+> **Total Agnosticism**: If your language isn't on the list, you can still use [Custom Command Gates](/reference/configuration#custom-command-gates-agnosticism) to wrap any third-party linter or compiler into the Rigour supervisor loop.
+
+---
+
+## Safety Rails (Core)
+
+### `complexity`
+- **ID**: `SME_COGNITIVE_LOAD` (Universal) or `AST_COMPLEXITY` (TS/JS)
+- **Check Logic**: Calculates Cognitive Complexity (Cyclomatic + Nesting).
+- **Fail Condition**: Any single function's complexity > `gates.ast.complexity`.
+- **Primary Goal**: Prevent "God Functions" that agents tend to generate during large refactors.
+
+### `max_params`
+- **ID**: `AST_MAX_PARAMS`
+- **Check Logic**: Counts arguments in function declarations.
+- **Fail Condition**: Parameter count > `gates.ast.max_params`.
+- **Primary Goal**: Enforce dependency injection or object-based configuration over long argument lists.
+
+### `max_function_lines`
+- **ID**: `AST_MAX_FUNCTION_LINES`
+- **Check Logic**: Counts physical lines of code.
+- **Fail Condition**: Function depth > `gates.ast.max_function_lines`.
+
+---
+
+## SME Intelligence Gates (Universal)
+
+Rigour's Universal AST engine (powered by Tree-sitter WASM) implements advanced Subject Matter Expert (SME) logic across 10+ languages.
+
+### Cognitive Complexity 🧠
+Unlike simple Cyclomatic complexity, Cognitive complexity measures how hard code is for a human (or an AI agent) to understand.
+- **Logic**: Base Cyclomatic score + (Nesting Depth * 2).
+- **Benefit**: Discriminates against deeply nested code (callback hell, nested if/else) that increases technical debt.
+
+### Security Sinks 🛡️
+Proactively identifies code that introduces security vulnerabilities.
+- **Python**: Detects `eval()`, `exec()`, and `os.system()`.
+- **Go**: Flags usage of the `unsafe` package and shell execution.
+- **Rust**: Identifies `unsafe` blocks that bypass the borrow checker.
+- **Java**: Flags native method declarations and `Runtime.exec()`.
+
+### Ecosystem Best Practices (SME)
+Enforces language-specific professional standards:
+- **Go Mandatory Errors**: Ensures `err` returned from functions is actually checked.
+- **Python Defaults**: Flags mutable default arguments (e.g., `def list(a=[])`).
+- **Rust Reliability**: Discourages the use of `.unwrap()` in favor of safe error handling.
+- **Java Hygiene**: Detects empty `catch` blocks (exception swallowing).
+
+---
+
+## The Quality Handshake (SAST+DAST)
+Rigour provides a **double-check** loop. High-complexity files are automatically required to have higher dynamic test coverage. See the [Quality Handshake guide](/examples/quality-handshake).
+
+---
+
+## Security & Hygiene
+
+### `no-eval`
+**Banned Nodes**: `CallExpression` where callee is `eval` or `new Function`.
+
+### `no-process-env-write`
+**Banned Nodes**: `AssignmentExpression` targeting `process.env`.
+- **Reason**: Modification of environment variables at runtime is a side-effect that creates unpredictable agent behavior.
+
+### `no-fs-write-sync`
+**Banned Nodes**: `fs.writeFileSync`, `fs.appendFileSync`, etc.
+- **Goal**: Force agents to use async patterns which are more compatible with Rigour’s snapshotting engine.
+
+---
+
+## Advanced: Logic Extraction
+Rigour's AST engine is designed specifically to help agents **refactor**. 
+
+When a `complexity` gate fails, Rigour doesn't just say "Fix it." The Fix Packet contains instructions like:
+> "Function 'processOrder' is too complex. Extract the 'TaxCalculation' block into a separate function to lower the score."
+
+
+---
+
+## CONCEPTS/FIX-PACKET
+
+# Fix Packet (V2)
+
+The high-fidelity communication bridge between Rigour and an AI agent.
+
+## Overview
+
+Unlike a traditional diff or patch, a **Rigour Fix Packet** is a **Diagnostic Format**. It does not provide the solution; instead, it provides the agent with structured, prioritized metadata about engineering violations that must be resolved to achieve a `PASS` state.
+
+## Schema (V2)
+
+```json
+{
+  "version": 2,
+  "goal": "Achieve PASS state for all quality gates",
+  "violations": [
+    {
+      "id": "ast-complexity",
+      "gate": "ast",
+      "severity": "high",
+      "title": "Complexity Cap Exceeded",
+      "details": "Function 'processData' has cyclomatic complexity of 15 (max: 10).",
+      "files": ["src/parser.ts"],
+      "metrics": {
+        "current": 15,
+        "max": 10
+      },
+      "instructions": [
+        "Extract nested logic into a separate utility function.",
+        "Replace the switch statement with a lookup table or polymorphic behavior."
+      ]
+    }
+  ],
+  "constraints": {
+    "no_new_deps": true,
+    "max_files_changed": 10,
+    "protected_paths": [".github/**", "docs/**"]
+  }
+}
+```
+
+## Why Diagnostics over Patches?
+
+Rigour follows a **Stateless** loop philosophy:
+1. **Autonomy**: We trust the agent's ability to refactor. We simply provide the "Engineering Specs" it violated.
+2. **Safety**: By providing violations rather than code, we ensure the agent remains responsible for the final implementation.
+3. **Precision**: High-fidelity metrics (like exact complexity scores) help agents make surgical fixes rather than "guess-and-check" refactoring.
+
+## Key Components
+
+### `violations[]`
+A list of specific gate failures. Each violation includes:
+- **`details`**: Context-specific error message.
+- **`instructions`**: Heuristic-based advice on how to resolve the issue.
+- **`metrics`**: The raw data (e.g., line counts) that triggered the failure.
+
+### `constraints`
+Safety rails that the agent MUST respect during the refactoring process (e.g., not touching `docs/` or adding new `package.json` dependencies).
+
+## Usage
+Agents retrieve the latest Fix Packet by calling `rigour_get_fix_packet` (MCP) or by running `rigour explain` (CLI).
+
+
+---
+
+## CONCEPTS/MODES
+
+# Advisor vs. Supervisor
+
+Rigour operates in two distinct modes depending on how you integrate it into your workflow.
+
+## 1. Advisor Mode (MCP)
+
+In **Advisor Mode**, Rigour acts as a high-fidelity consultant for your AI agent.
+
+- **Role**: Pre-flight Validator.
+- **Trigger**: The agent proactively calls Rigour tools (e.g., `rigour_check`) to verify its work.
+- **UX**: Seamlessly integrated into IDEs like **Cursor** or **Cline**.
+- **Philosophy**: Agent-driven. The agent asks: *"Is this code good enough to commit?"*
+
+### When to use:
+- Interactive development in an IDE.
+- Complex refactors where the agent needs frequent feedback before finishing a turn.
+
+---
+
+## 2. Supervisor Mode (CLI Loop)
+
+In **Supervisor Mode**, Rigour acts as the "governor" of the entire process.
+
+- **Role**: Iterative Controller.
+- **Trigger**: You run `rigour run -- <agent-command>`.
+- **UX**: Terminal-based, wrapping agents like **Claude Code**.
+- **Philosophy**: Tool-driven. Rigour says: *"You are not finished until these gates pass. Here is what you failed."*
+
+### When to use:
+- Headless automation or CI/CD pipelines.
+- Terminal-based coding agents.
+- Ensuring 100% compliance without manual re-prompting.
+
+---
+
+## Comparison Summary
+
+| Feature | Advisor (MCP) | Supervisor (CLI) |
+|:---|:---|:---|
+| **Primary Tool** | `@rigour-labs/mcp` | `@rigour-labs/cli` |
+| **Control Flow** | Agent calls Rigour | Rigour wraps Agent |
+| **UX** | VS Code / JetBrains / Desktop | Terminal / Shell |
+| **Feedback** | Interactive Response | Loop Iterations |
+| **Example Agent** | Cursor, Cline, Gemini Desktop | Claude Code, Shell Agents |
+
+
+---
+
+## CONCEPTS/PHILOSOPHY
+
+# Philosophy
+
+The no-bullshit approach to AI code review.
+
+## The Problem
+
+AI coding agents are powerful, but they can also be dangerous. They might:
+
+- Modify files they shouldn't touch
+- Introduce security vulnerabilities
+- Make changes that break your build
+- Touch too many files at once
+
+## The Rigour Solution
+
+Rigour acts as a **safety layer** between AI agents and your codebase. It validates every change before it's applied.
+
+### Core Principles
+
+#### 1. Trust, But Verify
+
+AI agents are helpful. But every change should be validated before it touches production code.
+
+#### 2. Fail Fast
+
+Catch problems immediately, not after code is merged.
+
+#### 3. Zero Config by Default
+
+Rigour works out of the box with sensible defaults. Configure only what you need.
+
+#### 4. Transparency
+
+Every validation result includes clear explanations. No black boxes.
+
+## How It Works
+
+```mermaid
+graph TD
+    A[AI Agent Task] --> B(Audit: Rigour check)
+    B --> C{Pass?}
+    C -->|Yes| D[Finish Audit]
+    C -->|No| E[Generate Fix Packet]
+    E --> F[Agent self-corrects]
+    F --> A
+```
+
+1. **Initial Pass**: Your agent (CLI or IDE-based) proposes changes.
+2. **Audit**: Rigour runs internal gates (AST, Safety, Content) and external commands (Tests, Lint).
+3. **Diagnostic**: If gates fail, Rigour generates a structured **Fix Packet** (JSON-based engineering feedback).
+4. **Self-Correction**: The agent consumes the Fix Packet to correct its own violations automatically.
+
+## No Bullshit Means
+
+- **No telemetry** - Your code stays private
+- **No cloud dependency** - Runs entirely local
+- **No complex setup** - One command to start
+- **No false promises** - We catch what we can, honestly
+
+
+---
+
+## CONCEPTS/PRESETS
+
+# Presets & Roles
+
+In Rigour v2.0.0, we distinguish between **Project Roles** (which define gate thresholds) and **Language Support** (which is now universal and automatic).
+
+## Project Roles (`preset`)
+
+The `preset` field defines the "personality" of your project. Each role comes with tailored SME thresholds for complexity, line counts, and security.
+
+### `api` (Backend Services)
+Optimized for high-reliability backend logic.
+- **Complexity Limit**: 10
+- **Security Sinks**: Strict (eval/exec banned)
+- **Primary Goal**: Reliability and maintainable business logic.
+
+### `ui` (Web/React/Next.js)
+Optimized for components and user interfaces.
+- **Complexity Limit**: 15 (Allows for nested JSX)
+- **Max Function Lines**: 60
+- **Primary Goal**: Component modularity and hook safety.
+
+### `infra` (Terraform/CDK/IaC)
+Optimized for infrastructure as code.
+- **Safe Paths**: Strict protection of `.github` and CI configs.
+- **Primary Goal**: Preventing accidental infrastructure destruction.
+
+---
+
+## Universal Language Support
+Unlike v1.x, you no longer need to "enable" language presets. Rigour's **Universal SME Engine** automatically detects and supervises:
+
+- **Web**: TypeScript, JavaScript, React
+- **Systems**: Go, Rust, C, C++
+- **Enterprise**: Java, C#
+- **Scripting**: Python, Ruby, PHP, Kotlin, Swift
+
+---
+
+## How it works
+
+Rigour combines your **Role** (thresholds) with your **Language** (syntax-aware queries) to provide expert-level supervision.
+
+```yaml
+# rigour.yml
+preset: api    # Use API thresholds
+paradigm: oop  # Enforce object-oriented best practices
+```
+
+Rigour will then automatically apply Go-specific error handling checks if it sees `.go` files, and Python-specific mutable default checks for `.py` files, both using the `api` complexity limits.
+
+
+---
+
+## CONCEPTS/WORKFLOWS
+
+# AI Workflows: Copilot & PRs
+
+Rigour is the "Engineering Handshake" between AI agents and your codebase. It ensures that regardless of which AI tool you use, the output adheres to your project's standards.
+
+## 🤝 Workflow 1: GitHub Copilot (Advisor)
+
+GitHub Copilot is excellent at suggesting code, but it doesn't always know your project's specific engineering constraints (like complexity limits or forbidden dependencies).
+
+In this workflow, Rigour acts as a **Local Validator**:
+
+1.  **Generate**: Use GitHub Copilot to write a function or refactor a module.
+2.  **Audit**: Before committing, run `npx @rigour-labs/cli check`.
+3.  **Refine**: If Rigour identifies a violation (e.g., "Complexity too high"), use Copilot to fix it:
+    - *Prompt*: "Copilot, Rigour says this function is too complex. Refactor it to reduce cyclomatic complexity by extracting the logic into a helper."
+4.  **Verify**: Run `rigour check` again to ensure a `PASS` state.
+
+---
+
+## 🛡️ Workflow 2: Automated PR Reviews (Supervisor)
+
+Rigour can act as an **Automated Technical Reviewer** in your pull request pipeline. This ensures that only high-quality code reaches human review.
+
+### The Pull Request Pipeline:
+1.  **Submit PR**: A developer (human or AI) submits a pull request.
+2.  **CI Audit**: Rigour runs automatically in GitHub Actions using `--ci --json` flags.
+3.  **Standardized Feedback**:
+    - **PASS**: The PR is marked as technically compliant. Humans can focus on business logic.
+    - **FAIL**: Rigour blocks the merge and provides a `rigour-fix-packet.json`.
+4.  **Self-Healing**: If an agent is handling the PR (like Claude Code), it can read the diagnostic packet and submit a fix commit automatically.
+
+### Why use Rigour in PRs?
+- **Consistent standards**: Enforce the same rules across the entire team.
+- **Save human time**: Don't waste senior developers' time pointing out complexity issues or "missing tests" violations that Rigour can catch in milliseconds.
+- **Safe delegation**: Feel confident delegating large refactors to AI because Rigour acts as the safety rail.
+
+---
+
+## 🎯 Pro-Tip: The "Rigour-First" mindset
+
+When working with any AI, mention Rigour in your project instructions (e.g., in `.cursorrules` or `.clinerules`):
+
+> "Always verify changes using `rigour_check`. If violations occur, read the Fix Packet and resolve them before finalizing the task."
+
+
+---
+
+## EXAMPLES/QUALITY-HANDSHAKE
+
+# The Quality Handshake (SAST + DAST)
+
+A truly production-ready supervisor understands that **Structure (Static)** and **Behavior (Dynamic)** must be verified together. Rigour bridges this gap by cross-referencing AST analysis with runtime test coverage.
+
+## The SME Double-Key Logic
+Rigour's `CoverageGate` implements a "Double-Key" verification system:
+
+| Structural Risk (Static) | Required Coverage (Dynamic) | Rationale |
+| :--- | :--- | :--- |
+| **Simple** (Complexity < 5) | > 50% | Basic validation is sufficient for simple logic. |
+| **Complex** (Complexity > 10) | > 80% | Complex branches MUST be proven at runtime. |
+| **Critical** (Safety Gate Path) | > 95% | Security-sensitive paths require near-total coverage. |
+
+## 🚀 Live Trace: The Quality Handshake
+Watch how Rigour cross-references the `blunders.go` AST with the `lcov.info` dynamic report.
+
+```bash
+$ npx rigour check
+```
+
+#### Step 1: Identifying "Blind Spots"
+Rigour detects that `go/blunders.go` has a **SME_COGNITIVE_LOAD** failure (Complexity: 14).
+
+#### Step 2: Verifying Dynamic Proof
+Rigour checks the `lcov.info` and finds:
+- File `go/blunders.go` has only **20.00%** coverage.
+
+#### Step 3: Triggering the Handshake Failure
+> **[DYNAMIC_COVERAGE_LOW]** Low coverage for high-risk file: `go/blunders.go`
+> 
+> **Details**: Current coverage: 20%. Required: 80% due to structural risk (Complexity: 14).
+> 
+> **SME Insight**: You are deploying complex logic without runtime validation. This is a "Blind Spot" refactor.
+> 
+> **Resolution**: Add unit tests for the nested conditions in `complexNestedLogic`.
+
+---
+
+## Unified Quality Dashboard
+Rigour synthesizes these results into a single score:
+
+```json
+{
+  "status": "FAIL",
+  "score": 42.5,
+  "summary": {
+    "structural_health": "FAIL (3 violations)",
+    "test_confidence": "FAIL (1 blind spot)",
+    "runtime_resilience": "PASS"
+  }
+}
+```
+
+
+---
+
+## EXAMPLES/SME-COOKBOOKS
+
+# SME Best Practices (Cookbook)
+
+Rigour isn't just a linter; it's an **Engineering Subject Matter Expert (SME)**. These examples show how Rigour enforces professional standards across ecosystems.
+
+## Cloud-Native Go SME
+Rigour enforces strict concurrency safety and error handling patterns for Go.
+
+```yaml
+# rigour.yml
+gates:
+  ast:
+    complexity: 8
+    max_params: 4
+  rules:
+    - id: GO_ERROR_CHECK
+      pattern: "if err != nil"
+      enforce: mandatory
+```
+
+### What Rigour Catches:
+1. **Missing Error Checks**: Flags any function call returning `error` that isn't immediately followed by `if err != nil`.
+2. **Unsafe Sinks**: Identifies usage of `os.exec` or `unsafe` pointers in sensitive modules.
+3. **Cognitive Complexity**: Flags deeply nested `select` or `for` loops that increase technical debt.
+
+---
+
+## Data Engineering Python SME
+Enforce high-quality, bug-free Python patterns for data pipelines.
+
+```yaml
+# rigour.yml
+paradigm: functional
+gates:
+  ast:
+    complexity: 10
+```
+
+---
+
+## 🚀 Live Execution Trace: Catching Blunders
+
+Watch how Rigour's SME supervisors intercept the `blunders.go` and `blunders.py` files in real-time.
+
+### 1. The Headless Supervisor Loop
+Run Rigour in your test suite directory to see the SME in action.
+
+```bash
+$ npx rigour check --interactive
+```
+
+#### Step 1: Scanning Go Architecture
+> **[SME_BEST_PRACTICE]** Ecosystem anti-pattern detected
+> **File**: `go/blunders.go:L5` 
+> **Logic**: Function `handleRequest` calls `fetchData` but ignores the `error` return.
+> **Expert Hint**: Mandatory error checking: Enforce `if err != nil` after every fallible call.
+
+#### Step 2: Evaluating Python Safety
+> **[SME_SECURITY_SINK]** Unsafe function call detected: `eval(code)`
+> **File**: `python/blunders.py:L2`
+> **Logic**: Dynamic execution detected. This bypasses structural validation.
+> **Expert Hint**: Avoid using shell execution or eval. Use safe alternatives like `ast.literal_eval`.
+
+#### Step 3: Measuring Cognitive Load
+> **[SME_COGNITIVE_LOAD]** Method `complexNestedLogic` is too complex (14)
+> **File**: `go/blunders.go:L16`
+> **Logic**: 4-level nesting (if > if > if > for) detected.
+> **Expert Hint**: Flatten logical branches and extract nested loops into focused sub-methods.
+
+---
+
+## Technical Contract Summary
+When you adopt Rigour, you aren't just adding a linter; you are adding a **Project SME** that guards your production intent.
+
+
+---
+
+## GETTING-STARTED/CONFIGURATION
+
+# Configuration
+
+Customize Rigour for your project with `rigour.yml`.
+
+## Minimal Configuration
+
+Create a `rigour.yml` in your project root. Rigour uses sensible defaults, but a basic config helps define your project's identity:
+
+```yaml
+# rigour.yml
+version: 1
+preset: api      # api, ui, infra, or data
+paradigm: oop    # oop, functional, or minimal
+
+# Quality Gates
+gates:
+  max_file_lines: 500
+  ast:
+    complexity: 10
+    max_params: 5
+```
+
+## Configuration Core
+
+### 1. Safety Rails
+Prevent AI agents from touching critical files.
+
+```yaml
+gates:
+  safety:
+    protected_paths:
+      - ".github/**"
+      - "rigour.yml"
+      - "*.lock"
+    max_files_changed_per_cycle: 10
+```
+
+### 2. Universal AST SME
+Enable structural analysis for your specific language. Rigour automatically detects your language, but you can tune the expert logic:
+
+```yaml
+gates:
+  ast:
+    complexity: 10      # Max Cognitive Load
+    max_function_lines: 50
+```
+
+### 3. Quality Handshake (SAST+DAST)
+Bridge the gap between code structure and tests.
+
+```yaml
+gates:
+  coverage:
+    risk_adjusted: true # Requires high coverage for complex code
+```
+
+## Next Steps
+
+- **[Full Reference](/reference/configuration)** - Complete schema specification.
+- **[SME Cookbooks](/examples/sme-cookbooks)** - Advanced patterns for Go, Python, and Java.
+- **[CLI Commands](/cli/commands)** - See all available commands.
+
+
+---
+
+## GETTING-STARTED/INSTALLATION
+
+# Installation
+
+Get Rigour set up in your project in under a minute.
+
+## Prerequisites
+
+- Node.js 18+
+- npm, yarn, or pnpm
+
+## Install Globally
+
+```bash
+npm install -g @rigour-labs/cli
+```
+
+## Install as Dev Dependency
+
+```bash
+npm install -D @rigour-labs/cli
+```
+
+## Use with npx (No Install)
+
+```bash
+npx @rigour-labs/cli check
+```
+
+## Verify Installation
+
+```bash
+rigour --version
+```
+
+You should see output like:
+
+```
+rigour v1.6.0
+```
+
+## Next Steps
+
+Head to the [Quick Start](/getting-started/quick-start) to run your first code review!
+
+
+---
+
+## GETTING-STARTED/QUICK-START
+
+# Quick Start
+
+Get your first AI code review running in 60 seconds. Rigour ensures that code meets your standards before it is even committed.
+
+---
+
+## 1. Initialize Rigour
+
+```bash
+npx @rigour-labs/cli init
+```
+
+This generates a `.rigour.yaml` file in your root with standard industry defaults for safety and complexity.
+
+---
+
+## 2. See it in Action (The Fail-Fix Loop)
+
+Let's simulate a common AI mistake: a "God Function" with too many parameters.
+
+### Step A: Introduce a Violation
+Create a file `bad.js` with an overly complex signature:
+```javascript
+function processOrder(id, user, items, discount, shipping, tax, payment, analytics) {
+  // Too many params!
+}
+```
+
+### Step B: Run the Audit
+```bash
+npx @rigour-labs/cli check
+```
+
+**Output:**
+```text
+✘ FAIL - Quality gate violations found.
+
+[AST_MAX_PARAMS] Function 'processOrder' has 8 parameters (max: 5)
+  Details: High parameter count detected in bad.js
+  Hint: Reduce number of parameters or use an options object.
+```
+
+### Step C: Fix and Re-Audit
+Refactor the function to use an options object:
+```javascript
+function processOrder({ id, user, items, ...meta }) {
+  // Balanced signature!
+}
+```
+
+Run `npx @rigour-labs/cli check` again:
+```text
+✔ PASS - All quality gates satisfied.
+```
+
+---
+
+## 3. Polyglot Power: Checking Go Architecture
+Rigour isn't just for JavaScript. It acts as an SME for 10+ languages.
+
+### Step A: Cognitive Complexity in Go
+Create `logic.go` with deep nesting:
+```go
+func Handle(a, b bool) {
+  if a {
+    if b {
+      for i := 0; i < 10; i++ { fmt.Println(i) }
+    }
+  }
+}
+```
+
+### Step B: Run the Audit
+```bash
+$ npx rigour check --interactive
+```
+
+**Output:**
+> **[SME_COGNITIVE_LOAD]** Method 'Handle' has high cognitive load (12)
+> **Hint**: Flatten logical branches and extract nested loops.
+
+---
+
+## 4. Deploy a Supervisor Loop
+
+For headless agents (like Claude Code), use `rigour run` to automate the entire fix-cycle:
+
+```bash
+npx @rigour-labs/cli run -- claude "refactor my auth logic"
+```
+
+Rigour will execute the agent, check the output, and if gates fail, it will automatically give the agent the **Fix Packet** and request a second pass.
+
+---
+
+## Next Steps
+
+- **[SME Cookbooks](/examples/sme-cookbooks)** - Advanced patterns for Go, Python, and Java.
+- **[Quality Handshake](/examples/quality-handshake)** - Bridging Static and Dynamic analysis.
+- **[Configuration](/reference/configuration)** - Tune gates for your project.
+
+
+---
+
+## MCP/MCP-SERVER
+
+# MCP Server
+
+Integrate Rigour with AI agents via Model Context Protocol (MCP).
+
+## Overview
+
+Rigour provides an MCP server that allows AI coding agents to validate their changes before finalizing a task. Unlike traditional linters, Rigour is designed to be consumed by agents to enforce engineering standards.
+
+## Installation
+
+```bash
+npx @rigour-labs/mcp
+```
+Or install globally:
+```bash
+npm install -g @rigour-labs/mcp
+```
+
+---
+
+## Integration Cookbook: Client Recipes
+
+Rigour can be integrated with any MCP-compliant client. Below are optimized configuration recipes for the most popular AI agentic tools.
+
+### 🤖 Claude Code
+Claude Code consumes MCP servers via its internal config.
+
+```bash
+# Add Rigour to Claude Code
+claude mcp add rigour npx -y @rigour-labs/mcp
+```
+
+### 🖱️ Cursor
+Cursor can be configured globally or per-project.
+
+**Global setup:**
+1. Open **Cursor Settings** > **Features** > **MCP**.
+2. Click **+ Add New MCP Server**.
+3. Name: `Rigour`
+4. Type: `command`
+5. Command: `npx -y @rigour-labs/mcp`
+
+**Project-specific setup:**
+Add this to your `.cursor/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "rigour": {
+      "command": "npx",
+      "args": ["-y", "@rigour-labs/mcp"]
+    }
+  }
+}
+```
+
+### 🛠️ Cline / Roo Code
+Cline uses a dedicated settings file. Add this to your `cline_mcp_settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "rigour": {
+      "command": "npx",
+      "args": ["-y", "@rigour-labs/mcp"]
+    }
+  }
+}
+```
+
+### 🌀 Antigravity
+If you are using Antigravity, Rigour is often pre-configured or can be added via the tool-call interface by pointing to the binary:
+
+```json
+{
+  "command": "npx",
+  "args": ["-y", "@rigour-labs/mcp"]
+}
+```
+
+### 🛰️ Gemini CLI / Firebase Genkit
+For programmatic usage or CLI wrappers that support MCP:
+
+```typescript
+import { McpClient } from '@modelcontextprotocol/sdk';
+
+const client = new McpClient({
+  command: 'npx',
+  args: ['-y', '@rigour-labs/mcp']
+});
+```
+
+---
+
+## Available Tools
+
+The MCP server exposes tools for validation and project reasoning.
+
+### `rigour_check`
+
+Runs the full suite of Rigour quality gates on the current project state.
+
+**Arguments:**
+- `cwd` (optional): Absolute path to the project root.
+
+### `rigour_explain`
+
+Provides a human-readable explanation of why the last quality gate check failed.
+
+**Arguments:**
+- `cwd` (optional): Absolute path to the project root.
+
+### `rigour_status`
+
+A lightweight PASS/FAIL check that returns structured JSON. Ideal for agent polling.
+
+**Arguments:**
+- `cwd` (optional): Absolute path to the project root.
+
+### `rigour_get_fix_packet`
+
+Retrieves the prioritized **Fix Packet (Diagnostic)** containing actionable instructions for the agent to resolve quality gate violations.
+
+### `rigour_list_gates` & `rigour_get_config`
+
+Utility tools that allow the agent to inspect active gates and the project's `rigour.yml` configuration.
+
+## The Stateless Workflow
+
+Rigour's MCP tools operate on the **current filesystem state**. Agents should follow this loop:
+
+1.  **Work**: Apply changes to the codebase.
+2.  **Audit**: Call `rigour_check` or `rigour_status`.
+3.  **Refine**: If failures occur, call `rigour_get_fix_packet` or `rigour_explain` once to get instructions.
+4.  **Repeat**: Resolve the issues and audit again until `PASS`.
+
+## Best Practices
+
+1. **Audit Before Done**: Never claim a task is complete without a `PASS` status from Rigour.
+2. **Read the Packet**: Use `rigour_get_fix_packet` to understand *how* to refactor (e.g., extracting functions to reduce complexity).
+3. **Reason about Rules**: Use `rigour_get_config` to understand project-specific constraints like protected paths or forbidden dependencies.
+
+
+---
+
+## REFERENCE/CONFIGURATION
+
+# Configuration Reference
+
+Complete reference for `rigour.yml` configuration.
+
+## Full Example
+
+```yaml
+# rigour.yml
+version: 1
+
+# Project meta
+preset: api
+paradigm: oop
+
+# Performance & UI commands
+commands:
+  format: "npm run format"
+  test: "npm test"
+
+# Quality Gates
+gates:
+  max_file_lines: 500
+  forbid_todos: true
+  
+  # AST Gates
+  ast:
+    complexity: 10
+    max_params: 5
+    
+  # Safety Rails
+  safety:
+    max_files_changed_per_cycle: 10
+    protected_paths:
+      - ".github/**"
+      - "docs/**"
+      - "rigour.yml"
+```
+
+## Options Reference
+
+### `version`
+
+**Type:** `number`  
+**Default:** `1`
+
+Schema version for the config file.
+
+---
+
+### `gates.safety.protected_paths`
+
+**Type:** `string[]`  
+**Default:** `[".github/**", "docs/**", "rigour.yml"]`
+
+Glob patterns for files that cannot be modified by the agent.
+
+---
+
+### `gates.safety.max_files_changed_per_cycle`
+
+**Type:** `number`  
+**Default:** `10`
+
+Maximum number of files that can be changed in a single agent turn before Rigour aborts.
+
+---
+
+### `preset`
+
+**Type:** `string`  
+**Options:** `api`, `ui`, `infra`, `data`
+
+Project-level preset that defines default gate thresholds.
+
+---
+
+---
+
+### `architecture.boundaries`
+
+**Type:** `array`  
+**Description:** Enforce strict layering rules by forbidding specific import paths based on the file's location.
+
+```yaml
+gates:
+  architecture:
+    boundaries:
+      - from: "src/api/**"
+        to: "src/ui/**"
+        mode: "deny"
+      - from: "packages/core/**"
+        to: "packages/cli/**"
+        mode: "deny"
+```
+
+| Property | Description |
+|:---|:---|
+| `from` | Glob pattern representing the source file(s). |
+| `to` | Glob pattern representing the forbidden import/path. |
+| `mode` | Currently only `deny` is supported for strict isolation. |
+
+**How it works**: Rigour's AST engine scans your import declarations. If a file matching the `from` pattern attempts to import a module matching the `to` pattern, the audit fails. This is essential for preventing circular dependencies and leaky abstractions in large monorepos.
+
+---
+
+### `gates.dependencies.forbid`
+
+**Type:** `string[]`  
+**Description:** Prevent specific third-party packages from being added to your project.
+
+```yaml
+gates:
+  dependencies:
+    forbid:
+      - "lodash" # Use native ES6 instead
+      - "axios"  # Use fetch
+```
+
+---
+
+### `gates.ast`
+
+**Type:** `object`
+**Description:** Configures syntax-aware gates for code quality.
+
+| Option | Default | Description |
+|:---|:---:|:---|
+| `complexity` | `10` | **SME Logic**: Cognitive complexity limit (cyclomatic + nesting depth). |
+| `max_methods` | `10` | Max methods allowed per class. |
+| `max_params` | `5` | Max arguments allowed per function signature. |
+| `max_function_lines` | `50` | Max lines of code per function body. |
+
+---
+
+### `gates.coverage`
+**Description**: Enables the "Quality Handshake" between static structural risks and dynamic runtime coverage.
+
+| Option | Type | Description |
+|:---|:---:|:---|
+| `risk_adjusted` | `boolean` | If true, complex files (complexity > 10) require >80% coverage. |
+
+---
+
+## Universal Language Support
+Rigour provides built-in, syntax-aware AST analysis for:
+**TypeScript, JavaScript, Go, Rust, Python, Java, C#, C, C++, PHP, Swift, and Kotlin.**
+
+---
+
+## Custom Command Gates (Agnosticism)
+
+The most powerful feature of Rigour is its ability to wrap **any** third-party tool as a first-class quality gate. Use this to extend Rigour beyond its built-in SME logic:
+
+```yaml
+commands:
+  # Wrap security scanners
+  security: "trivy fs ."
+  
+  # Wrap custom domain rules
+  custom: "./scripts/my-logic.sh"
+```
+
+### The "Universal Handshake"
+When you define a command:
+1.  **Execution**: Rigour runs the command in your project's `cwd`.
+2.  **Validation**: If the command exits with **Code 0**, it `PASSES`. If it exits with any other code, it `FAILS`.
+3.  **Feedback**: The `stderr` or `stdout` from your tool is automatically captured and placed into the **Fix Packet**.
+4.  **Refinement**: AI agents will read your tool's raw output and attempt to fix the code to make the gate pass.
+
+This allows you to bring your existing enterprise toolchain into the Rigour supervisor loop.
+
+
+---
+

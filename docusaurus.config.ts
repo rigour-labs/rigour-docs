@@ -43,6 +43,13 @@ const config: Config = {
 
   themeConfig: {
     image: 'img/rigour-social-card.jpg',
+    metadata: [
+      { name: 'keywords', content: 'ai agent, code review, quality gate, ast, automation, devops' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:title', content: 'Rigour - No Bullshit Code Review for AI Agents' },
+      { property: 'og:description', content: 'Rigour acts as the Technical Contract that AI agents must satisfy before their work is accepted.' },
+    ],
     colorMode: {
       defaultMode: 'dark',
       disableSwitch: false,
