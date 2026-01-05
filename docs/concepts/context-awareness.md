@@ -2,16 +2,16 @@ AI agents often fall into the trap of **"Vibe Coding"**—writing code that look
 
 Rigour's **Universal Context Awareness Engine** prevents this by dynamically mining your codebase to build a "Golden Record" of established patterns.
 
-## The Problem: Context Drift
+## The Problem: "Guess and Hope" (Vibe Coding)
 
-Imagine your project defines a core configuration variable `BASE_URL`. An AI agent, lacking awareness of your specific project standards, might "invent" a secondary variable to solve a local problem:
+The most common frustration with AI agents is the **narrative vs. reality** gap. An agent will confidently state: *"I have fixed the type errors and reformatted the code. You can push now."*
 
-```javascript
-// ❌ Vibe Coding: Agent invents a new pattern
-const url = process.env.BASE_URL_PRODUCTION; 
-```
+But in reality:
+- **MyPy/Lint** is still fails with 13 errors.
+- **Context Drift**: The agent used a variable name that doesn't exist or doesn't follow project standards.
+- **CI Failures**: You lose 10 minutes waiting for a CI pipeline that was doomed from the start.
 
-Without context awareness, a structural gate would pass this code. But with Rigour's Context Alignment:
+Rigour acts as the **firewall** between the agent's creative guesses and your project's technical reality.
 
 1. **Discovery**: Rigour scans your environment files, CI configs, and existing source code.
 2. **Anchoring**: It identifies `BASE_URL` as a project-standard "Anchor".
