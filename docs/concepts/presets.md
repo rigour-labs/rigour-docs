@@ -1,48 +1,99 @@
-# Presets & Roles
+# Presets, Roles & Paradigms
 
-In Rigour v2.0.0, we distinguish between **Project Roles** (which define gate thresholds) and **Language Support** (which is now universal and automatic).
+Rigour uses a hierarchical configuration system that combines **Project Roles**, **Coding Paradigms**, and **Universal Standards** to provide expert-level supervision with zero initial configuration.
+
+## The Hierarchy of Rigour
+
+When you run an audit, Rigour assembles your quality gates in this order:
+1.  **Universal Config**: Base standards (e.g., forbidding `TODO`s, base complexity).
+2.  **Project Role (`preset`)**: Industry-standard thresholds for your project type (API, UI, etc.).
+3.  **Coding Paradigm (`paradigm`)**: Language-agnostic structural rules (OOP, Functional).
+4.  **Local Overrides**: Your project's specific `rigour.yml` settings.
+
+---
+
+## Universal Standards (`UNIVERSAL_CONFIG`)
+
+Every Rigour project starts with these "hygiene" gates:
+
+| Gate | Default Value | Description |
+|:---|:---:|:---|
+| `max_file_lines` | `500` | Maximum allowed lines per file |
+| `forbid_todos` | `true` | Prevents merging code with `TODO` markers |
+| `forbid_fixme` | `true` | Prevents merging code with `FIXME` markers |
+| `max_files_changed` | `10` | Safety rail for AI agent "explosions" |
+
+---
 
 ## Project Roles (`preset`)
 
-The `preset` field defines the "personality" of your project. Each role comes with tailored SME thresholds for complexity, line counts, and security.
+Roles define the "personality" of your project. They are detected by the existence of specific files or dependencies.
 
 ### `api` (Backend Services)
-Optimized for high-reliability backend logic.
-- **Complexity Limit**: 10
-- **Security Sinks**: Strict (eval/exec banned)
-- **Primary Goal**: Reliability and maintainable business logic.
+Optimized for high-reliability, maintainable backend logic.
+- **Detection**: `express`, `nestjs`, `go.mod`, `requirements.txt`, `pyproject.toml`, `main.go`.
+- **Thresholds**:
+  - `max_file_lines`: `400`
+- **Required Docs**: `docs/SPEC.md`, `docs/ARCH.md`, `README.md`
+- **Roadmap**: Service layer enforcement (Controllers → Services).
 
 ### `ui` (Web/React/Next.js)
-Optimized for components and user interfaces.
-- **Complexity Limit**: 15 (Allows for nested JSX)
-- **Max Function Lines**: 60
-- **Primary Goal**: Component modularity and hook safety.
+Optimized for component-based modularity and JSX complexity.
+- **Detection**: `react`, `next`, `vue`, `svelte`, `tailwind.config.js`, `vite.config.ts`.
+- **Thresholds**:
+  - `max_file_lines`: `300`
+- **Required Docs**: `docs/SPEC.md`, `docs/ARCH.md`, `README.md`
+- **Roadmap**: Prop-drilling detection (Max depth 5).
 
-### `infra` (Terraform/CDK/IaC)
-Optimized for infrastructure as code.
-- **Safe Paths**: Strict protection of `.github` and CI configs.
-- **Primary Goal**: Preventing accidental infrastructure destruction.
+### `infra` (IaC/DevOps)
+Focuses on safety and preventing accidental infrastructure destruction.
+- **Detection**: `Dockerfile`, `docker-compose.yml`, `main.tf`, `k8s/`, `helm/`, `ansible/`.
+- **Thresholds**:
+  - `max_file_lines`: `300`
+- **Required Docs**: `docs/RUNBOOK.md`, `docs/ARCH.md`, `README.md`
+
+### `data` (Data/ML Pipelines)
+Optimized for reproducibility and pipeline clarity.
+- **Detection**: `ipynb`, `spark`, `pandas`, `dbt_project.yml`, `data/`.
+- **Thresholds**:
+  - `max_file_lines`: `500`
+- **Required Docs**: `docs/DATA_DICTIONARY.md`, `docs/PIPELINE.md`, `README.md`
+- **Roadmap**: Stochastic determinism (seed enforcement) and PII leak detection.
 
 ---
 
-## Universal Language Support
-Unlike v1.x, you no longer need to "enable" language presets. Rigour's **Universal SME Engine** automatically detects and supervises:
+## Coding Paradigms (`paradigm`)
 
-- **Web**: TypeScript, JavaScript, React
-- **Systems**: Go, Rust, C, C++
-- **Enterprise**: Java, C#
-- **Scripting**: Python, Ruby, PHP, Kotlin, Swift
+Paradigms apply syntax-aware AST rules. Rigour scans your source code content to detect the dominant paradigm.
+
+### `oop` (Object-Oriented)
+- **Patterns**: `class`, `interface`, `extends`, `constructor`, `private`, `public`.
+- **AST Gates**:
+  - **Complexity**: `10`
+  - **Max Methods**: `10` per class
+  - **Max Params**: `5` per method
+  - **Inheritance Depth**: `3`
+  - **Class Dependencies**: `5`
+
+### `functional`
+- **Patterns**: `export const`, `reduce(`, `.pipe(`, `compose(`, `curry(`, `readonly`.
+- **AST Gates**:
+  - **Complexity**: `8`
+  - **Max Functions**: `15` per file
+  - **Max Params**: `4` per function
+  - **Max Nesting**: `3`
+  - **Function Lines**: `40`
 
 ---
 
-## How it works
+## Auto-Discovery
 
-Rigour combines your **Role** (thresholds) with your **Language** (syntax-aware queries) to provide expert-level supervision.
+The `rigour init` command performs a deep scan of your environment:
+1.  **Dependency Scan**: Checks `package.json`, `go.mod`, etc., for Role markers.
+2.  **Filesystem Scan**: Looks for config files (e.g., `Dockerfile`) for Role markers.
+3.  **Content Heuristics**: Samples top source files to detect coding patterns (e.g., heavy use of `class` vs. `const`) to assign a Paradigm.
 
-```yaml
-# rigour.yml
-preset: api    # Use API thresholds
-paradigm: oop  # Enforce object-oriented best practices
+To override discovery:
+```bash
+rigour init --preset api --paradigm oop
 ```
-
-Rigour will then automatically apply Go-specific error handling checks if it sees `.go` files, and Python-specific mutable default checks for `.py` files, both using the `api` complexity limits.

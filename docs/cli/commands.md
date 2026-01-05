@@ -40,7 +40,7 @@ npx @rigour-labs/cli check --config ./custom-rigour.yaml
 
 ## `rigour init`
 
-Initialize Rigour in your project.
+Initialize Rigour in your project. This command creates a `rigour.yml` file and can automatically detect your project's role and coding paradigm.
 
 ```bash
 npx @rigour-labs/cli init [options]
@@ -50,17 +50,36 @@ npx @rigour-labs/cli init [options]
 
 | Flag | Description |
 |------|-------------|
-| `--preset <name>` | Use a specific preset |
-| `--force` | Overwrite existing config |
+| `--preset <name>` | Explicitly set a **Project Role** (`api`, `ui`, `infra`, `data`) |
+| `--paradigm <name>` | Explicitly set a **Coding Paradigm** (`oop`, `functional`) |
+| `--force` | Overwrite existing `rigour.yml` config |
+
+### Project Roles (`--preset`)
+Roles define the high-level engineering standards and gate thresholds.
+
+| Role | Target | Key Differentiators |
+|:---|:---|:---|
+| `api` | Backend Services | 400 line limit, strict SOLID enforcement |
+| `ui` | Web/Frontends | 300 line limit, JSX-aware complexity |
+| `infra` | IaC (Terraform) | Protected `.github/` and CI configs |
+| `data` | Data/ML Pipelines | 500 line limit, reproducibility gates |
+
+### Coding Paradigms (`--paradigm`)
+Paradigms layer specific AST (Abstract Syntax Tree) rules on top of your role.
+
+| Paradigm | Key Gates |
+|:---|:---|
+| `oop` | Max inheritance depth (3), Method counts (10/class) |
+| `functional` | Max nesting (3), Function length (40 lines) |
 
 ### Examples
 
 ```bash
-# Default initialization
+# Default initialization (Auto-discovery)
 npx @rigour-labs/cli init
 
-# With TypeScript preset
-npx @rigour-labs/cli init --preset typescript
+# Explicitly use API role with OOP paradigm
+npx @rigour-labs/cli init --preset api --paradigm oop
 ```
 
 ---
