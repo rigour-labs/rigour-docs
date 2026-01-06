@@ -1,134 +1,91 @@
 ---
+title: Remote MCP Server
+description: Deploy Rigour's quality gates over HTTP for web-based AI agents
 sidebar_position: 2
 ---
 
 # Remote MCP Server
 
-Deploy Rigour's quality gates over HTTP for web-based AI agents.
+> [!NOTE]
+> The Remote MCP Server is designed for **web-based agents** and cloud-hosted platforms. For local desktop agents like Cursor or Claude Code, use the [stdio-based MCP Server](/mcp/mcp-server) instead.
 
 ## Overview
 
-The Remote MCP Server (`@rigour-labs/remote-mcp`) exposes Rigour's quality gates via HTTP using the Model Context Protocol's `StreamableHTTPServerTransport`. This is designed for web-based agent environments that cannot use stdio-based communication.
-
-**When to use:**
-- Web-based AI agents (browser-based tools)
-- Cloud-hosted agent platforms
-- Multi-tenant agent systems
-- Agents that require HTTP/REST access
-
-**When to use stdio instead:**
-- Local desktop agents (Cursor, Claude Desktop, Cline)
-- Single-user development environments
-- Direct CLI integration
-
-> **🚀 Official Production Server**  
-> Rigour provides a free, public MCP server at **`https://mcp.rigour.run/`**  
-> No authentication required • No setup needed • Always available
->
-> Perfect for testing and development. For production use, deploy your own instance with authentication enabled.
-
-## Quick Start
-
-### Deploy to Vercel
-
-1. Clone the Rigour repository:
-```bash
-git clone https://github.com/rigour-labs/rigour
-cd rigour/packages/rigour-remote-mcp
-```
-
-2. Install Vercel CLI and deploy:
-```bash
-npm i -g vercel
-vercel
-```
-
-3. (Optional) Add authentication:
-```bash
-# Generate a secure token
-openssl rand -hex 32
-
-# Set it in Vercel
-vercel env add RIGOUR_MCP_TOKEN
-```
-
-Your server is now live!
+The Remote MCP Server (`@rigour-labs/remote-mcp`) exposes Rigour's quality gates via HTTP using the Model Context Protocol's Streamable HTTP transport. This enables web-based agent environments that cannot use stdio-based communication to benefit from Rigour's quality gates.
 
 **Official Production Server**: `https://mcp.rigour.run/`
 
-You can also deploy your own instance - it will be at `https://your-project.vercel.app/`
+> [!TIP]
+> Rigour provides a **free, public MCP server** at `https://mcp.rigour.run/` — no authentication required, no setup needed, always available. Perfect for testing and development.
 
-## Deployment Options
+## When to Use
 
-### Vercel (Recommended for MVP)
+| Scenario | Use Remote MCP | Use Stdio MCP |
+|----------|----------------|---------------|
+| Web-based AI agents | ✅ | |
+| Cloud-hosted agent platforms | ✅ | |
+| Multi-tenant agent systems | ✅ | |
+| Browser-based tools | ✅ | |
+| Local desktop agents (Cursor, Claude) | | ✅ |
+| Single-user development | | ✅ |
+| Direct CLI integration | | ✅ |
 
-```bash
-vercel
-```
+## Quick Start
 
-**Pros:**
-- Zero configuration
-- Edge Functions support
-- Free tier available
+### Using the Public Server
 
-**Cons:**
-- 60s execution limit (fine for Rigour checks)
-- Serverless (no persistent state)
-
-### Google Cloud Run
-
-```bash
-gcloud run deploy rigour-mcp \
-  --source . \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated
-```
-
-**Pros:**
-- Long-running processes
-- Auto-scaling
-- Better for high-volume usage
-
-### Fly.io
+The fastest way to get started is using Rigour's public server:
 
 ```bash
-fly launch
-fly deploy
+# Health check
+curl https://mcp.rigour.run/health
+
+# Call rigour_status
+curl -X POST https://mcp.rigour.run/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+      "name": "rigour_status",
+      "arguments": {
+        "cwd": "/path/to/project"
+      }
+    },
+    "id": 1
+  }'
 ```
 
-**Pros:**
-- Global edge deployment
-- Persistent connections
-- Simple pricing
+### Self-Hosting
 
-### Railway
+For production deployments with authentication or custom configurations:
 
 ```bash
-railway up
-```
+# Clone and deploy
+git clone https://github.com/rigour-labs/rigour
+cd rigour/packages/rigour-remote-mcp
 
-**Pros:**
-- One-click deployment
-- Built-in database support
-- Simple UI
+# Deploy to your preferred platform
+vercel          # Vercel
+fly deploy      # Fly.io
+railway up      # Railway
+```
 
 ## Authentication
 
-Authentication is **optional** and controlled via environment variables.
+Authentication is **optional** and controlled via the `RIGOUR_MCP_TOKEN` environment variable.
 
-### Without Authentication (Open Mode)
-
-Perfect for private deployments or internal tools:
+### Open Mode (No Authentication)
 
 ```bash
-# No RIGOUR_MCP_TOKEN set
+# No RIGOUR_MCP_TOKEN set - server accepts all requests
 npm run start
 ```
 
-### With Bearer Token
+> [!WARNING]
+> Only use open mode for private deployments or internal tools. For public-facing servers, always enable authentication.
 
-For public or multi-tenant deployments:
+### Bearer Token Authentication
 
 ```bash
 # Generate a secure token
@@ -141,21 +98,27 @@ export RIGOUR_MCP_TOKEN="your-generated-token-here"
 npm run start
 ```
 
-## Client Configuration
+Clients must include the token in requests:
 
-### Web-Based Agents
+```bash
+curl -X POST https://your-server.vercel.app/ \
+  -H "Authorization: Bearer your-generated-token-here" \
+  -H "Content-Type: application/json" \
+  -d '{ ... }'
+```
 
-Use the `StreamableHTTPClientTransport` from the MCP SDK:
+## Client Integration
+
+### Web-Based Agents (TypeScript)
 
 ```typescript
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 
-// Use the official Rigour MCP server
 const transport = new StreamableHTTPClientTransport({
   url: "https://mcp.rigour.run/",
   headers: {
-    "Authorization": "Bearer your-token-here" // Optional
+    "Authorization": "Bearer your-token-here" // Optional for public server
   }
 });
 
@@ -177,28 +140,6 @@ const result = await client.callTool({
 });
 ```
 
-### cURL Testing
-
-```bash
-# Health check (official server)
-curl https://mcp.rigour.run/health
-
-# Call a tool (official server - no auth required)
-curl -X POST https://mcp.rigour.run/ \
-  -H "Content-Type: application/json" \
-  -d '{
-    "jsonrpc": "2.0",
-    "method": "tools/call",
-    "params": {
-      "name": "rigour_status",
-      "arguments": {
-        "cwd": "/path/to/project"
-      }
-    },
-    "id": 1
-  }'
-```
-
 ## Available Tools
 
 The remote server exposes the same tools as the stdio version:
@@ -211,69 +152,63 @@ The remote server exposes the same tools as the stdio version:
 | `rigour_get_fix_packet` | Get prioritized fix instructions |
 | `rigour_list_gates` | List active quality gates |
 | `rigour_get_config` | Get project configuration |
+| `rigour_record_failure` | Record a failure for retry loop detection |
+| `rigour_clear_failure` | Clear failure history after resolution |
 
-See the [MCP Server](/mcp/mcp-server) page for detailed tool documentation.
+See [MCP Server](/mcp/mcp-server) for detailed tool documentation.
 
 ## Environment Variables
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `PORT` | No | `3000` | Server port |
-| `RIGOUR_MCP_TOKEN` | No | - | Bearer token for authentication |
+| `RIGOUR_MCP_TOKEN` | No | — | Bearer token for authentication |
+
+## Architecture
+
+| Component | Technology |
+|-----------|------------|
+| **Framework** | Hono (lightweight, edge-compatible) |
+| **Transport** | `@hono/mcp` (StreamableHTTPServerTransport wrapper) |
+| **Protocol** | MCP v2024-11-05+ (Streamable HTTP) |
+| **Deployment** | Vercel, Cloud Run, Fly.io, Railway |
+
+## Troubleshooting
+
+### "Unauthorized" Error
+
+Ensure your `Authorization` header matches the `RIGOUR_MCP_TOKEN` set on the server:
+
+```bash
+curl -X POST https://your-server.vercel.app/ \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+### Timeout Errors
+
+Serverless platforms have execution limits (e.g., Vercel: 60s). For long-running checks:
+
+1. Optimize your quality gates configuration
+2. Deploy to a platform with longer timeouts (Cloud Run, Fly.io)
+3. Split large checks into smaller batches
+
+### "rigour.yml not found"
+
+The remote server requires a `rigour.yml` file in the project directory:
+
+1. Initialize the project: `rigour init`
+2. Ensure the `cwd` path is absolute and correct
+3. Verify the server has filesystem access to the project
 
 ## Security Best Practices
 
 1. **Always use HTTPS** in production
 2. **Set `RIGOUR_MCP_TOKEN`** for public deployments
 3. **Rotate tokens** periodically (monthly recommended)
-4. **Use environment variables** - never commit tokens to git
+4. **Use environment variables** — never commit tokens to git
 5. **Monitor access logs** for suspicious activity
-6. **Rate limit** if exposing publicly (use Vercel/Cloudflare)
-
-## Architecture
-
-- **Framework**: Hono (lightweight, edge-compatible)
-- **Transport**: `@hono/mcp` (StreamableHTTPServerTransport wrapper)
-- **Protocol**: MCP v2024-11-05+ (Streamable HTTP)
-- **Deployment**: Vercel Edge Functions, Cloud Run, Fly.io, Railway
-
-## Troubleshooting
-
-### "Unauthorized" Error
-
-Ensure your `Authorization` header matches the `RIGOUR_MCP_TOKEN`:
-
-```bash
-# Call rigour_status (official server)
-curl -X POST https://mcp.rigour.run/
-```
-
-### Timeout Errors
-
-Vercel Edge Functions have a 60s limit. If your Rigour checks take longer:
-
-1. Optimize your quality gates
-2. Deploy to Cloud Run or Fly.io for longer timeouts
-3. Split large checks into smaller batches
-
-### "rigour.yml not found"
-
-The remote server requires a `rigour.yml` file in the project directory specified by the `cwd` argument. Ensure:
-
-1. The project has been initialized with `rigour init`
-2. The `cwd` path is absolute and correct
-3. The server has filesystem access to the project
-
-## Comparison: Remote vs Stdio
-
-| Feature | Remote MCP | Stdio MCP |
-|---------|------------|-----------|
-| **Use Case** | Web agents | Local agents |
-| **Transport** | HTTP/SSE | stdin/stdout |
-| **Auth** | Bearer tokens | Process isolation |
-| **Deployment** | Cloud platforms | Local machine |
-| **Scalability** | Multi-tenant | Single-user |
-| **Latency** | Network dependent | Near-zero |
+6. **Rate limit** using platform features (Vercel/Cloudflare)
 
 ## Next Steps
 
