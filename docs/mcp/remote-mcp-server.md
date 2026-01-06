@@ -38,22 +38,10 @@ The fastest way to get started is using Rigour's public server:
 
 ```bash
 # Health check
-curl https://mcp.rigour.run/health
+curl https://mcp.rigour.run/api/health
 
-# Call rigour_status
-curl -X POST https://mcp.rigour.run/ \
-  -H "Content-Type: application/json" \
-  -d '{
-    "jsonrpc": "2.0",
-    "method": "tools/call",
-    "params": {
-      "name": "rigour_status",
-      "arguments": {
-        "cwd": "/path/to/project"
-      }
-    },
-    "id": 1
-  }'
+# Connect via SSE
+# GET https://mcp.rigour.run/api/mcp/sse?sessionId=123
 ```
 
 ### Self-Hosting
@@ -112,15 +100,12 @@ curl -X POST https://your-server.vercel.app/ \
 ### Web-Based Agents (TypeScript)
 
 ```typescript
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 
-const transport = new StreamableHTTPClientTransport({
-  url: "https://mcp.rigour.run/",
-  headers: {
-    "Authorization": "Bearer your-token-here" // Optional for public server
-  }
-});
+const transport = new SSEClientTransport(
+  new URL("https://mcp.rigour.run/api/mcp/sse?sessionId=unique-id")
+);
 
 const client = new Client({
   name: "my-web-agent",
@@ -168,10 +153,10 @@ See [MCP Server](/mcp/mcp-server) for detailed tool documentation.
 
 | Component | Technology |
 |-----------|------------|
-| **Framework** | Hono (lightweight, edge-compatible) |
-| **Transport** | `@hono/mcp` (StreamableHTTPServerTransport wrapper) |
-| **Protocol** | MCP v2024-11-05+ (Streamable HTTP) |
-| **Deployment** | Vercel, Cloud Run, Fly.io, Railway |
+| **Framework** | Next.js (App Router) |
+| **Transport** | Standard SSE + HTTP POST |
+| **Protocol** | MCP v2024-11-05+ |
+| **Deployment** | Vercel (Native) |
 
 ## Troubleshooting
 
