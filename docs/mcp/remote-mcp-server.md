@@ -277,6 +277,6 @@ The remote server requires a `rigour.yml` file in the project directory specifie
 
 ## Next Steps
 
-- [Configure Quality Gates](/concepts/quality-gates)
+- [Configure Quality Gates](/concepts/ast-gates)
 - [Understand Fix Packets](/concepts/fix-packet)
 - [Explore CLI Commands](/cli/commands)
