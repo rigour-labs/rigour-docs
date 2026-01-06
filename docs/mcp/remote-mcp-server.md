@@ -22,7 +22,7 @@ The Remote MCP Server (`@rigour-labs/remote-mcp`) exposes Rigour's quality gates
 - Direct CLI integration
 
 > **🚀 Official Production Server**  
-> Rigour provides a free, public MCP server at **`https://mcp.rigour.run/mcp`**  
+> Rigour provides a free, public MCP server at **`https://mcp.rigour.run/`**  
 > No authentication required • No setup needed • Always available
 >
 > Perfect for testing and development. For production use, deploy your own instance with authentication enabled.
