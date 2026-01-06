@@ -27,18 +27,18 @@ npm install -g @rigour-labs/mcp
 For web-based AI agents or cloud-hosted platforms, use the **Remote MCP Server** instead:
 
 ```bash
-# Deploy to Vercel, Cloud Run, Fly.io, or Railway
-npm install -g @rigour-labs/remote-mcp
+# Clone and deploy to Vercel
+git clone https://github.com/rigour-labs/rigour-mcp
 ```
 
-The remote server exposes the same tools over HTTP using `StreamableHTTPServerTransport`. Perfect for:
+The remote server exposes the same tools over HTTP using **SSE (Server-Sent Events) transport**. Perfect for:
 - Browser-based agents
 - Multi-tenant platforms  
 - Cloud-hosted agent environments
 
 **[📖 Read the Remote MCP Server Guide →](/mcp/remote-mcp-server)**
 
-> **Note**: The stdio-based `@rigour-labs/mcp` (this page) is designed for **local agents** like Cursor and Claude Desktop. For web-based agents, use `@rigour-labs/remote-mcp`.
+> **Note**: The stdio-based `@rigour-labs/mcp` (this page) is designed for **local agents** like Cursor and Claude Desktop. For web-based agents, use the [Remote MCP Server](/mcp/remote-mcp-server).
 
 ---
 
@@ -147,6 +147,10 @@ Retrieves the prioritized **Fix Packet (Diagnostic)** containing actionable inst
 ### `rigour_list_gates` & `rigour_get_config`
 
 Utility tools that allow the agent to inspect active gates and the project's `rigour.yml` configuration.
+
+### `rigour_record_failure` & `rigour_clear_failure`
+
+Specialty tools for tracking agent retry loops and enforcing quality guardrails during persistent failures.
 
 ## The Stateless Workflow
 
