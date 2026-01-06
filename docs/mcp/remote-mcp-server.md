@@ -54,9 +54,9 @@ vercel env add RIGOUR_MCP_TOKEN
 
 Your server is now live!
 
-**Official Production Server**: `https://mcp.rigour.run/mcp`
+**Official Production Server**: `https://mcp.rigour.run/`
 
-You can also deploy your own instance - it will be at `https://your-project.vercel.app/mcp`
+You can also deploy your own instance - it will be at `https://your-project.vercel.app/`
 
 ## Deployment Options
 
@@ -153,7 +153,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 
 // Use the official Rigour MCP server
 const transport = new StreamableHTTPClientTransport({
-  url: "https://mcp.rigour.run/mcp",
+  url: "https://mcp.rigour.run/",
   headers: {
     "Authorization": "Bearer your-token-here" // Optional
   }
@@ -184,7 +184,7 @@ const result = await client.callTool({
 curl https://mcp.rigour.run/health
 
 # Call a tool (official server - no auth required)
-curl -X POST https://mcp.rigour.run/mcp \
+curl -X POST https://mcp.rigour.run/ \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc": "2.0",
@@ -244,8 +244,8 @@ See the [MCP Server](/mcp/mcp-server) page for detailed tool documentation.
 Ensure your `Authorization` header matches the `RIGOUR_MCP_TOKEN`:
 
 ```bash
-# Health check (official server)
-curl https://mcp.rigour.run/health
+# Call rigour_status (official server)
+curl -X POST https://mcp.rigour.run/
 ```
 
 ### Timeout Errors
