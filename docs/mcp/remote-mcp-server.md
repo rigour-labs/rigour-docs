@@ -11,7 +11,7 @@ sidebar_position: 2
 
 ## Overview
 
-The Remote MCP Server (`@rigour-labs/remote-mcp`) exposes Rigour's quality gates via HTTP using the Model Context Protocol's Streamable HTTP transport. This enables web-based agent environments that cannot use stdio-based communication to benefit from Rigour's quality gates.
+The Remote MCP Server ([rigour-mcp](https://github.com/rigour-labs/rigour-mcp)) exposes Rigour's quality gates via HTTP using the Model Context Protocol's SSE (Server-Sent Events) transport. This enables web-based agent environments that cannot use stdio-based communication to benefit from Rigour's quality gates.
 
 **Official Production Server**: `https://mcp.rigour.run/`
 
@@ -50,13 +50,11 @@ For production deployments with authentication or custom configurations:
 
 ```bash
 # Clone and deploy
-git clone https://github.com/rigour-labs/rigour
-cd rigour/packages/rigour-remote-mcp
+git clone https://github.com/rigour-labs/rigour-mcp
+cd rigour-mcp
 
-# Deploy to your preferred platform
-vercel          # Vercel
-fly deploy      # Fly.io
-railway up      # Railway
+# Deploy to Vercel (recommended)
+vercel
 ```
 
 ## Authentication
