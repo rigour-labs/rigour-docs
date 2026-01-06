@@ -65,7 +65,7 @@ Authentication is **optional** and controlled via the `RIGOUR_MCP_TOKEN` environ
 
 ```bash
 # No RIGOUR_MCP_TOKEN set - server accepts all requests
-npm run start
+npm run dev
 ```
 
 > [!WARNING]
@@ -81,13 +81,13 @@ openssl rand -hex 32
 export RIGOUR_MCP_TOKEN="your-generated-token-here"
 
 # Start server
-npm run start
+npm run dev
 ```
 
 Clients must include the token in requests:
 
 ```bash
-curl -X POST https://your-server.vercel.app/ \
+curl -X POST https://your-server.vercel.app/api/mcp/messages?sessionId=123 \
   -H "Authorization: Bearer your-generated-token-here" \
   -H "Content-Type: application/json" \
   -d '{ ... }'
@@ -163,7 +163,7 @@ See [MCP Server](/mcp/mcp-server) for detailed tool documentation.
 Ensure your `Authorization` header matches the `RIGOUR_MCP_TOKEN` set on the server:
 
 ```bash
-curl -X POST https://your-server.vercel.app/ \
+curl -X POST https://your-server.vercel.app/api/mcp/messages?sessionId=123 \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json"
 ```
