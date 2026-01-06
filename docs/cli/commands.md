@@ -82,6 +82,16 @@ npx @rigour-labs/cli init
 npx @rigour-labs/cli init --preset api --paradigm oop
 ```
 
+### Framework Compatibility (Safe Scaffolding)
+Many framework CLI tools (like `create-next-app` or `npm init vite`) require the target directory to be **completely empty**. If you run `rigour init` first, these tools will fail.
+
+**Best Practice**:
+1. Run your framework initializer first.
+2. Run `rigour init` second to layer your engineering standards on top.
+
+**If you already initialized Rigour**:
+Simply move `rigour.yml` and the `docs/` folder aside temporarily, run your framework command, and move them back. AI Agents using Rigour have a built-in workflow to handle this automatically.
+
 ---
 
 ## `rigour explain`

@@ -14,7 +14,11 @@ Get your first AI code review running in 60 seconds. Rigour ensures that code me
 npx @rigour-labs/cli init
 ```
 
-This generates a `.rigour.yaml` file in your root with standard industry defaults for safety and complexity.
+This generates a `rigour.yml` file in your root with standard industry defaults for safety and complexity.
+
+:::tip Framework Harmony
+If you plan to use a scaffolding tool like `create-next-app` or `npm init vite`, please run it **before** `rigour init`. These tools often require a completely empty directory to function correctly.
+:::
 
 ---
 
