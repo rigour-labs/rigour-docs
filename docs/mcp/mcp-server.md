@@ -22,6 +22,26 @@ npm install -g @rigour-labs/mcp
 
 ---
 
+## Remote Deployment
+
+For web-based AI agents or cloud-hosted platforms, use the **Remote MCP Server** instead:
+
+```bash
+# Deploy to Vercel, Cloud Run, Fly.io, or Railway
+npm install -g @rigour-labs/remote-mcp
+```
+
+The remote server exposes the same tools over HTTP using `StreamableHTTPServerTransport`. Perfect for:
+- Browser-based agents
+- Multi-tenant platforms  
+- Cloud-hosted agent environments
+
+**[📖 Read the Remote MCP Server Guide →](/mcp/remote-mcp-server)**
+
+> **Note**: The stdio-based `@rigour-labs/mcp` (this page) is designed for **local agents** like Cursor and Claude Desktop. For web-based agents, use `@rigour-labs/remote-mcp`.
+
+---
+
 ## Integration Cookbook: Client Recipes
 
 Rigour can be integrated with any MCP-compliant client. Below are optimized configuration recipes for the most popular AI agentic tools.
