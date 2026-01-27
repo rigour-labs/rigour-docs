@@ -5,23 +5,9 @@ slug: /
 
 # Welcome to Rigour
 
-**The Free, Open-Source CodeRabbit Alternative** 🎯
+**The Engineering Handshake for AI Agents** 🎯
 
-[![npm](https://img.shields.io/npm/v/@rigour-labs/cli?style=flat-square)](https://www.npmjs.com/package/@rigour-labs/cli)
-[![MCP Registry](https://img.shields.io/badge/MCP-Registry-blue?style=flat-square)](https://registry.modelcontextprotocol.io)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](https://opensource.org/licenses/MIT)
-
-Rigour is a **100% free, local-first** quality gate system for AI-generated code. Unlike cloud-based tools that charge $30/user/month and catch only 44% of bugs, Rigour provides **deterministic PASS/FAIL enforcement** with zero noise.
-
-## Why Rigour Over CodeRabbit?
-
-| Feature | CodeRabbit | Rigour |
-|:--------|:-----------|:-------|
-| **Pricing** | $30/user/month | Free Forever |
-| **Bug Detection** | 44% (AI-based) | 100% (Deterministic) |
-| **Data Privacy** | Cloud-based | Local-only |
-| **Review Speed** | Up to 20 min | Instant |
-| **Self-Hosting** | Enterprise only | Default |
+Rigour is a high-fidelity code review and supervision platform designed specifically for the age of agentic coding. It acts as the "bridge" between the creative power of AI models and the strict engineering requirements of production-grade codebases.
 
 ## The Core Problem: "Vibe Coding"
 
@@ -33,6 +19,15 @@ Common failure modes include:
 - **Narrative Hallucination**: Agent promises "CI will pass now," but the execution tools still return errors.
 
 **Rigour solves this by providing a deterministic "Technical Firewall" that agents must satisfy before their work is accepted.**
+
+---
+
+## Why Rigour?
+
+- 🛡️ **Universal SME**: Acting as a Subject Matter Expert for **10+ languages** (Go, Rust, Java, Python, C++, and more).
+- 🧠 **Architectural Gates**: Enforces SOLID, DRY, and specialized paradigms (OOP, Functional).
+- 🔄 **Quality Handshake**: Bridges the gap between **Static structure (SAST)** and **Dynamic performance (DAST/IAST)**.
+- 🤝 **Agentic Handshake**: The definitive protocol for reliable AI agent integration.
 
 ---
 
