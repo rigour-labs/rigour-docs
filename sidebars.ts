@@ -28,6 +28,7 @@ const sidebars: SidebarsConfig = {
       label: 'MCP Integration',
       items: [
         'mcp/mcp-server',
+        'mcp/memory-persistence',
       ],
     },
     {
@@ -40,6 +41,7 @@ const sidebars: SidebarsConfig = {
         'concepts/fix-packet',
         'concepts/ast-gates',
         'concepts/presets',
+        'concepts/ide-support',
       ],
     },
     {
