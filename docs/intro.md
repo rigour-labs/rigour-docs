@@ -42,16 +42,23 @@ Rigour is designed to be used by both Humans (who define the rules) and Agents (
 
 ---
 
-## 🌟 What's New in v2.0.0 (The Universal SME Release)
+## 🌟 What's New in v2.9.x (The Pattern Index Release)
 
-Rigour v2.0.0 is a complete reimagining of the platform, moving from a TypeScript-focused linter to a **Universal Engineering Supervisor**.
+Rigour v2.9 introduces the **Pattern Index** — a semantic understanding layer that allows AI agents to reason about your codebase patterns:
 
-- **Universal AST Support**: High-fidelity structural parsing for 10+ languages (Go, Rust, Java, Python, C++, etc.).
-- **Universal Context Awareness**: Dynamically discovery and enforcement of project-specific patterns.
-- **Environment Alignment**: Proactive verification of tool versions and runtime invariants.
-- **Cognitive Complexity Engine**: Nesting-aware complexity measurement.
-- **Dynamic Quality Handshake**: Requiring high test coverage for complex/high-risk code paths.
-- **Interactive Human Reporting**: The new `--interactive` flag for rich terminal visualizations.
+- **Pattern Index**: Build a searchable index of your codebase patterns, conventions, and architectural decisions.
+- **Semantic Search**: Find related patterns using natural language queries with vector embeddings.
+- **Staleness Detection**: Automatically detect outdated dependencies, deprecated APIs, and stale patterns.
+- **Context Memory**: Persistent key-value storage that survives across AI sessions.
+- **MCP Registry Listed**: Official listing at [registry.modelcontextprotocol.io](https://registry.modelcontextprotocol.io/v0.1/servers?search=rigour).
+
+### Previous Releases
+
+**v2.0.0 (Universal SME Release)**:
+- Universal AST Support for 10+ languages
+- Environment Alignment verification
+- Cognitive Complexity Engine
+- Dynamic Quality Handshake
 
 ---
 

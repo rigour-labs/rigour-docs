@@ -152,6 +152,80 @@ Utility tools that allow the agent to inspect active gates and the project's `ri
 
 Specialty tools for tracking agent retry loops and enforcing quality guardrails during persistent failures.
 
+---
+
+## Context Memory Tools
+
+Rigour provides persistent memory that survives across AI sessions. Use these tools to store and retrieve context.
+
+### `rigour_remember`
+
+Store a key-value pair in persistent context memory.
+
+**Arguments:**
+- `key` (required): The memory key.
+- `value` (required): The value to store (string).
+- `cwd` (optional): Project root path.
+
+**Example:**
+```
+rigour_remember(key: "last_refactor", value: "Extracted auth logic to AuthService")
+```
+
+### `rigour_recall`
+
+Retrieve a value from context memory.
+
+**Arguments:**
+- `key` (required): The memory key to retrieve.
+- `cwd` (optional): Project root path.
+
+### `rigour_forget`
+
+Delete a key from context memory.
+
+**Arguments:**
+- `key` (required): The memory key to delete.
+- `cwd` (optional): Project root path.
+
+### `rigour_list_memories`
+
+List all stored memory keys.
+
+**Arguments:**
+- `cwd` (optional): Project root path.
+
+---
+
+## Pattern Index Tools
+
+The Pattern Index enables semantic understanding of your codebase. Build the index first with `rigour index`.
+
+### `rigour_find_patterns`
+
+Search indexed patterns semantically or by keyword.
+
+**Arguments:**
+- `query` (required): Search query (natural language or keyword).
+- `semantic` (optional): Use semantic search with embeddings. Default: false.
+- `cwd` (optional): Project root path.
+
+**Example:**
+```
+rigour_find_patterns(query: "authentication middleware", semantic: true)
+```
+
+### `rigour_detect_staleness`
+
+Check for outdated patterns, dependencies, or deprecated APIs.
+
+**Arguments:**
+- `cwd` (optional): Project root path.
+
+**Returns:** List of stale patterns with recommendations.
+
+---
+
 ## The Stateless Workflow
 
 Rigour's MCP tools operate on the **current filesystem state**. Agents should follow this loop:
