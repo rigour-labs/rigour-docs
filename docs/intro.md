@@ -42,6 +42,18 @@ npx @rigour-labs/cli studio
 
 ---
 
+## 🛡️ "Local Honest" Governance
+
+Rigour is built on a "Local-First" philosophy. We believe that engineering governance should be private, instantaneous, and strictly under your control.
+
+*   **No Login Required**: Start governing in 60 seconds without creating an account.
+*   **Zero-Telemetry**: Your source code and command history never leave your machine.
+*   **Air-Gapped Sync**: The "Local Bridge" between your IDE and Studio happens entirely on your local filesystem.
+
+*This isn't just a feature—it's our trust moat.*
+
+---
+
 ## 📖 Where to Go Next?
 
 - **[Installation Guide](/getting-started)**: For global setup and MCP server configuration.
