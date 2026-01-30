@@ -14,9 +14,9 @@ npx -y @rigour-labs/mcp
 
 ## 🔌 Integration Recipes
 
-### 🤖 Claude Code
+### 🤖 Claude Code (CLI)
 ```bash
-claude mcp add rigour npx -y @rigour-labs/mcp
+claude mcp add rigour -- npx -y @rigour-labs/mcp
 ```
 
 ### 🖱️ Cursor
@@ -95,6 +95,20 @@ Rigour is intentionally **local-first**. Unlike other governance tools that requ
 - **Zero Push**: We never push your source code, your command history, or your arbitration decisions to any external server.
 
 *This ensures that your project's engineering standards and command executions remain 100% private and under your total control.*
+
+## 🌐 Web vs. Desktop: The Governance Moat
+
+| Feature | Desktop (Cursor / Claude Desktop) | Web (Claude.ai / ChatGPT) |
+|:---|:---|:---|
+| **File Access** | ✅ Native (direct disk read/write) | ❌ Sandboxed (no local disk access) |
+| **Trust Model** | 🛡️ **Local Honest** (100% Private) | ☁️ Cloud-Mediated (requires tunnel) |
+| **Setup** | `npx @rigour-labs/mcp` | Hosted Connector + Tunnel |
+
+### Why doesn't the Web App see my local files?
+For security, your browser cannot run shell commands or read your hard drive. To bridge Rigour to a web app, you would need to use a **Secure Tunnel** (like `ngrok`) to expose a local SSE server. 
+
+> [!IMPORTANT]
+> To maintain the **Local Honest** moat, we recommend using Rigour with **Desktop AI Agents**. If you must use the web version, look into our [Future Vision](/future/secure-mirror) for the E2E-encrypted Secure Mirror.
 
 ---
 
