@@ -56,17 +56,50 @@ Once connected, your AI agent will automatically use these tools:
 
 ---
 
-## 🛡️ Interception (HITL)
+## 🏗️ How it Works: The Local Bridge
 
-Rigour allows human operators to intercept and arbitrate AI actions in real-time.
+Even if your AI agent (like Cursor or Claude Code) is communicating with a model in the cloud, the **Governance Interception** happens entirely on your local machine.
 
-### How it works:
-1. When an agent calls `rigour_run` to execute a command (like `npm test`), the Control Room **pauses** the execution.
-2. A notification appears in the [Rigour Studio](/concepts/governance-studio).
-3. The human operator clicks **Approve** or **Reject**.
-4. Rigour resumes the agent task with the result of your decision.
+### The Handshake Architecture
 
-*This ensures that no critical commands are run without explicit engineering oversight.*
+```mermaid
+graph TD
+    subgraph "Your Machine (Local)"
+        A["AI Agent (Cursor/Claude)"] -- runs --> B["Rigour MCP Server<br/>(local process)"]
+        B -- writes events --> C[".rigour/events.jsonl<br/>(Shared File System)"]
+        D["Rigour Studio<br/>(Local Dashboard)"] -- watches --> C
+        D -- writes decision --> C
+        B -- reads decision --> C
+    end
+    
+    subgraph "Cloud"
+        E["AI Model (Claude/GPT-4)"] -- instructs --> A
+    end
+```
+
+### The Synchronization Flow:
+1. **Local Spawn**: When you add the Rigour MCP to your IDE, the IDE launches the server as a **local process** on your machine.
+2. **Shared State**: Both the MCP server and the Studio UI point to the same `.rigour` folder in your project root.
+3. **Air-Gapped Arbitration**: 
+   - The MCP server writes an "interception requested" log.
+   - The Studio UI (via EventStream) detects this change instantly and pauses the agent.
+   - Your local decision (Approve/Reject) is written back to the log.
+   - The local MCP server sees your decision and returns the result to the AI agent.
+
+*This ensures that your governance is local, private, and instantaneous—no matter where the AI model is hosted.*
+
+### 🌐 Local vs. Hosted Interception
+
+| Component | Local Bridge (Current) | Hosted Bridge (mcp.rigour.run) |
+|:---|:---|:---|
+| **MCP Execution** | NPX Command on your laptop. | SSE/HTTPS URL (Hosted). |
+| **Sync Layer** | Local `.rigour/` folder. | Rigour Cloud API (Websockets). |
+| **Command Scope** | Runs local scripts (`npm test`). | Runs remote scripts (CI/CD). |
+| **Interception** | Studio watches local disk. | Studio connects to Cloud Stream. |
+
+> [!NOTE]
+> **Why Hosted Interception?**  
+> If you are using a hosted MCP server (e.g., `https://mcp.rigour.run`), the interception events are pushed to the Rigour Governance Cloud. Your local Studio UI can "subscribe" to your Project ID to arbitrate these remote actions.
 
 ---
 
