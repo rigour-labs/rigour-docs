@@ -86,20 +86,15 @@ graph TD
    - Your local decision (Approve/Reject) is written back to the log.
    - The local MCP server sees your decision and returns the result to the AI agent.
 
-*This ensures that your governance is local, private, and instantaneous—no matter where the AI model is hosted.*
+### 🛡️ Zero-Telemetry & Local Trust
 
-### 🌐 Local vs. Hosted Interception
+Rigour is intentionally **local-first**. Unlike other governance tools that require cloud connectivity, Rigour's interception layer is built on a "Local Bridge" architecture:
 
-| Component | Local Bridge (Current) | Hosted Bridge (mcp.rigour.run) |
-|:---|:---|:---|
-| **MCP Execution** | NPX Command on your laptop. | SSE/HTTPS URL (Hosted). |
-| **Sync Layer** | Local `.rigour/` folder. | Rigour Cloud API (Websockets). |
-| **Command Scope** | Runs local scripts (`npm test`). | Runs remote scripts (CI/CD). |
-| **Interception** | Studio watches local disk. | Studio connects to Cloud Stream. |
+- **Local Storage**: All interception logs and human decisions are stored only in your `.rigour/` folder.
+- **Air-Gapped Sync**: The synchronization between your AI agent and the Governance Studio happens entirely on your machine via the local filesystem.
+- **Zero Push**: We never push your source code, your command history, or your arbitration decisions to any external server.
 
-> [!NOTE]
-> **Why Hosted Interception?**  
-> If you are using a hosted MCP server (e.g., `https://mcp.rigour.run`), the interception events are pushed to the Rigour Governance Cloud. Your local Studio UI can "subscribe" to your Project ID to arbitrate these remote actions.
+*This ensures that your project's engineering standards and command executions remain 100% private and under your total control.*
 
 ---
 
