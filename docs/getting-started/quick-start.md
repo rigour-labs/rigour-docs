@@ -101,8 +101,23 @@ Rigour will execute the agent, check the output, and if gates fail, it will auto
 
 ---
 
+## 5. Launch the Studio (Zero-Config Dashboard)
+
+The Studio is your "Mission Control." It bundles real-time shadowing, pattern discovery, and HITL governance into a single interface with **no setup required**.
+
+```bash
+npx @rigour-labs/cli studio
+```
+
+✔ **Ready-to-Run**: No dashboard to configure, no database to setup.
+✔ **Live Shadowing**: See AI tool calls and file changes in real-time.
+✔ **HITL Arbitration**: Approve or Reject AI decisions directly from the UI.
+
+---
+
 ## Next Steps
 
+- **[Rigour Studio Guide](/cli/commands#rigour-studio)** - Full details on the governance control room.
 - **[SME Cookbooks](/examples/sme-cookbooks)** - Advanced patterns for Go, Python, and Java.
 - **[Quality Handshake](/examples/quality-handshake)** - Bridging Static and Dynamic analysis.
 - **[Configuration](/reference/configuration)** - Tune gates for your project.

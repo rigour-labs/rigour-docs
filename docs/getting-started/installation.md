@@ -23,6 +23,10 @@ npm install -g @rigour-labs/cli
 npm install -D @rigour-labs/cli
 ```
 
+:::info Ready-to-Run Studio
+Every installation includes **Rigour Studio**, a premium local-first dashboard for AI governance. Simply run `rigour studio` after installing to launch your control room—no database or complex setup required.
+:::
+
 ## Use with npx (No Install)
 
 ```bash

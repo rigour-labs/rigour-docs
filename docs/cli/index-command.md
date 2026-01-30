@@ -9,11 +9,10 @@ Build a semantic index of your codebase patterns for AI-powered search and analy
 ## Overview
 
 The `rigour index` command scans your codebase and builds a searchable index of:
-- Functions and their signatures
-- Classes and their methods
-- Architectural patterns
-- Code conventions
-- Dependencies and their versions
+- **Universal Polyglot Support**: High-fidelity indexing for **Python, Go, Rust, Java, C++, TypeScript** and more.
+- **AI-Powered Semantic Search**: Natural language pattern discovery using local vector embeddings.
+- **Functions & signatures**: Classes, methods, and architectural patterns.
+- **Architecture**: Dependencies, versioning, and code conventions.
 
 This index powers the Pattern Index MCP tools (`rigour_find_patterns`, `rigour_detect_staleness`).
 

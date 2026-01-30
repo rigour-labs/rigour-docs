@@ -149,6 +149,35 @@ When you use `rigour run`, Rigour manages a stateful refinement loop:
 
 ---
 
+## `rigour studio`
+
+The **Governance Control Room**. A premium, local-first dashboard for real-time AI shadowing, pattern discovery, and HITL (Human-in-the-Loop) arbitration.
+
+```bash
+rigour studio [options]
+```
+
+### The Shadowing Experience
+Rigour Studio provides a high-fidelity interface for monitoring AI agents as they work on your local machine:
+1.  **Live Shadowing**: See tool calls and filesystem changes as they happen.
+2.  **Pattern Index**: Visually search and explore project patterns (supports AI-powered Semantic Search).
+3.  **Governance Audit**: Deep-dive into proposed changes before they are committed.
+4.  **HITL Arbitration**: Manually **Approve (Override)** or **Reject** AI actions directly from the UI.
+
+### Options
+
+| Flag | Default | Description |
+|:---|:---:|:---|
+| `--port <n>` | `3000` | Port to run the Studio dashboard on |
+| `--dev` | `true` | Run in development mode (recommended for v2) |
+
+### Key Features
+- **Memory Bank**: Visualize the agent's persistent memory and contextual state.
+- **Quality Gates**: Real-time visualization of gate violations and compliant code.
+- **Diff Viewer**: High-fidelity Monaco-based diffing for every AI interaction.
+
+---
+
 ---
 
 ## Technical Reference: The Quality Score
