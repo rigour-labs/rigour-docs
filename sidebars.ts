@@ -42,6 +42,8 @@ const sidebars: SidebarsConfig = {
         'concepts/ast-gates',
         'concepts/presets',
         'concepts/ide-support',
+        'concepts/governance-studio',
+        'concepts/vibe-coding-guide',
       ],
     },
     {
