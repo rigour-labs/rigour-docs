@@ -1,85 +1,48 @@
----
-sidebar_position: 1
-slug: /
----
+# 🛡️ Rigour
 
-# Welcome to Rigour
+**The Control Room for AI-Assisted Engineering.**
 
-**The Engineering Handshake for AI Agents** 🎯
-
-Rigour is a high-fidelity code review and supervision platform designed specifically for the age of agentic coding. It acts as the "bridge" between the creative power of AI models and the strict engineering requirements of production-grade codebases.
-
-## The Core Problem: "Vibe Coding"
-
-AI agents are creative tour-de-forces, but they often fall into the **Vibe Coding Trap**—claiming a task is "100% complete" based on narrative, while the technical reality is still broken.
-
-Common failure modes include:
-- **Environment Drift**: Agent runs local tools (Ruff, Mypy) that don't match the project's CI requirements.
-- **Context Drift**: Agent "guesses" patterns and variable names instead of aligning with the existing project lexicon.
-- **Narrative Hallucination**: Agent promises "CI will pass now," but the execution tools still return errors.
-
-**Rigour solves this by providing a deterministic "Technical Firewall" that agents must satisfy before their work is accepted.**
+Rigour is a high-fidelity governance platform that ensures AI agents (Cursor, Claude, VS Code) follow your project's engineering standards. It bridges the gap between AI creativity and production-grade reliability.
 
 ---
 
-## Why Rigour?
+## ⚡ Quick Start (60 Seconds)
 
-- 🛡️ **Universal SME**: Acting as a Subject Matter Expert for **10+ languages** (Go, Rust, Java, Python, C++, and more).
-- 🧠 **Architectural Gates**: Enforces SOLID, DRY, and specialized paradigms (OOP, Functional).
-- 🔄 **Quality Handshake**: Bridges the gap between **Static structure (SAST)** and **Dynamic performance (DAST/IAST)**.
-- 🤝 **Agentic Handshake**: The definitive protocol for reliable AI agent integration.
+You don't need to read a book. Just run these 3 commands in your project root:
 
----
-
-## Two Modes of Operation
-
-Rigour is designed to be used by both Humans (who define the rules) and Agents (who follow them):
-
-1.  **Advisor Mode (MCP)**: For interactive development. The agent proactively asks Rigour for feedback during its task.
-2.  **Supervisor Mode (CLI)**: For headless automation. Rigour wraps the agent and strictly enforces a PASS status before finishing.
-
-[Learn about Operating Modes →](/concepts/modes)
-
----
-
-## 🌟 What's New in v2.9.x (The Pattern Index Release)
-
-Rigour v2.9 introduces the **Pattern Index** — a semantic understanding layer that allows AI agents to reason about your codebase patterns:
-
-- **Pattern Index**: Build a searchable index of your codebase patterns, conventions, and architectural decisions.
-- **Semantic Search**: Find related patterns using natural language queries with vector embeddings.
-- **Staleness Detection**: Automatically detect outdated dependencies, deprecated APIs, and stale patterns.
-- **Context Memory**: Persistent key-value storage that survives across AI sessions.
-- **MCP Registry Listed**: Official listing at [registry.modelcontextprotocol.io](https://registry.modelcontextprotocol.io/v0.1/servers?search=rigour).
-
-### Previous Releases
-
-**v2.0.0 (Universal SME Release)**:
-- Universal AST Support for 10+ languages
-- Environment Alignment verification
-- Cognitive Complexity Engine
-- Dynamic Quality Handshake
-
----
-
-## Technical Book Structure
-
-This documentation is organized as a technical guide to help you ship faster and safer:
-
-- **[Quick Start](/getting-started/quick-start)**: Your first 100% compliant refactor in 60 seconds.
-- **[SME Cookbooks](/examples/sme-cookbooks)**: Expert patterns for specific languages.
-- **[Quality Handshake](/examples/quality-handshake)**: Bridging SAST and DAST.
-- **[Concepts](/concepts/philosophy)**: The philosophy behind Rigour's "Diagnostic" approach.
-- **[CI/CD Handbook](/cli/ci-integration)**: Production gates for enterprise pipelines.
-
----
-
-## Installation
-
+### 1. Initialize
+Align Rigour with your project's role (API, UI, etc.) and paradigm (OOP, Functional).
 ```bash
-# Register globally
-npm install -g @rigour-labs/cli
-
-# Run your first check
-rigour check --interactive
+npx @rigour-labs/cli init
 ```
+
+### 2. Index
+Build a semantic map of your codebase so AI agents can "reason" about your patterns.
+```bash
+npx @rigour-labs/cli index --semantic
+```
+
+### 3. Govern (Launch Studio)
+Open the visual Mission Control to shadow AI agents and arbitrate decisions in real-time.
+```bash
+npx @rigour-labs/cli studio
+```
+
+---
+
+## 🚀 Key Features
+
+*   **Universal Semantic Search**: Ask your codebase questions in natural language.
+*   **Live Shadowing**: Watch every AI tool call and decision in a real-time audit trail.
+*   **Human-in-the-Loop (HITL)**: Approve or Reject AI changes directly from the browser.
+*   **Polyglot Support**: High-fidelity indexing for Python, Go, Rust, Java, C++, TypeScript, and more.
+
+---
+
+## 📖 Where to Go Next?
+
+- **[Installation Guide](/getting-started/installation)**: For global setup and MCP server configuration.
+- **[Governance Studio](/concepts/governance-studio)**: How to use the visual dashboard.
+- **[Pattern Index](/cli/index-command)**: Deep dive into semantic indexing.
+
+*Rigour makes Vibe Coding a thing of the past. Professionalize your agentic workflow today.* 🦾

@@ -1,85 +1,33 @@
----
-sidebar_position: 1
----
-
 # MCP Server
 
-Integrate Rigour with AI agents via Model Context Protocol (MCP).
+Connect Rigour directly to your AI agents (Cursor, Claude Code, etc.) to enforce quality standards in real-time.
 
-## Overview
+---
 
-Rigour provides an MCP server that allows AI coding agents to validate their changes before finalizing a task. Unlike traditional linters, Rigour is designed to be consumed by agents to enforce engineering standards.
-
-## Installation
+## ⚡ Quick Start
 
 ```bash
-npx @rigour-labs/mcp
-```
-Or install globally:
-```bash
-npm install -g @rigour-labs/mcp
+npx -y @rigour-labs/mcp
 ```
 
 ---
 
-## Remote Deployment
-
-For web-based AI agents or cloud-hosted platforms, use the **Remote MCP Server** instead:
-
-```bash
-# Clone and deploy to Vercel
-git clone https://github.com/rigour-labs/rigour-mcp
-```
-
-The remote server exposes the same tools over HTTP using **SSE (Server-Sent Events) transport**. Perfect for:
-- Browser-based agents
-- Multi-tenant platforms  
-- Cloud-hosted agent environments
-
-**[📖 Read the Remote MCP Server Guide →](/mcp/remote-mcp-server)**
-
-> **Note**: The stdio-based `@rigour-labs/mcp` (this page) is designed for **local agents** like Cursor and Claude Desktop. For web-based agents, use the [Remote MCP Server](/mcp/remote-mcp-server).
-
----
-
-## Integration Cookbook: Client Recipes
-
-Rigour can be integrated with any MCP-compliant client. Below are optimized configuration recipes for the most popular AI agentic tools.
+## 🔌 Integration Recipes
 
 ### 🤖 Claude Code
-Claude Code consumes MCP servers via its internal config.
-
 ```bash
-# Add Rigour to Claude Code
 claude mcp add rigour npx -y @rigour-labs/mcp
 ```
 
 ### 🖱️ Cursor
-Cursor can be configured globally or per-project.
-
-**Global setup:**
-1. Open **Cursor Settings** > **Features** > **MCP**.
-2. Click **+ Add New MCP Server**.
-3. Name: `Rigour`
-4. Type: `command`
-5. Command: `npx -y @rigour-labs/mcp`
-
-**Project-specific setup:**
-Add this to your `.cursor/mcp.json`:
-```json
-{
-  "mcpServers": {
-    "rigour": {
-      "command": "npx",
-      "args": ["-y", "@rigour-labs/mcp"]
-    }
-  }
-}
-```
+1. Go to **Settings > Features > MCP**.
+2. **+ Add New MCP Server**:
+   - **Name**: `Rigour`
+   - **Type**: `command`
+   - **Command**: `npx -y @rigour-labs/mcp`
 
 ### 🛠️ Cline / Roo Code
-Cline uses a dedicated settings file. Add this to your `cline_mcp_settings.json`:
-
+Add this to your `cline_mcp_settings.json`:
 ```json
 {
   "mcpServers": {
@@ -91,152 +39,36 @@ Cline uses a dedicated settings file. Add this to your `cline_mcp_settings.json`
 }
 ```
 
-### 🌀 Antigravity
-If you are using Antigravity, Rigour is often pre-configured or can be added via the tool-call interface by pointing to the binary:
+---
 
-```json
-{
-  "command": "npx",
-  "args": ["-y", "@rigour-labs/mcp"]
-}
-```
+## 🛠️ Essential Tools
 
-### 🛰️ Gemini CLI / Firebase Genkit
-For programmatic usage or CLI wrappers that support MCP:
+Once connected, your AI agent will automatically use these tools:
 
-```typescript
-import { McpClient } from '@modelcontextprotocol/sdk';
-
-const client = new McpClient({
-  command: 'npx',
-  args: ['-y', '@rigour-labs/mcp']
-});
-```
+| Tool | Purpose |
+|:---|:---|
+| `rigour_check` | Runs all quality gates on your code. |
+| `rigour_run` | **Interceptable** command execution (e.g., tests, deploys). |
+| `rigour_find_patterns` | Semantic search for codebase patterns. |
+| `rigour_remember` | Persist architectural decisions in memory. |
+| `rigour_recall` | Retrieve stored engineering context. |
+| `rigour_get_fix_packet` | Get precise refactoring instructions on failure. |
 
 ---
 
-## Available Tools
+## 🛡️ Interception (HITL)
 
-The MCP server exposes tools for validation and project reasoning.
+Rigour allows human operators to intercept and arbitrate AI actions in real-time.
 
-### `rigour_check`
+### How it works:
+1. When an agent calls `rigour_run` to execute a command (like `npm test`), the Control Room **pauses** the execution.
+2. A notification appears in the [Rigour Studio](/concepts/governance-studio).
+3. The human operator clicks **Approve** or **Reject**.
+4. Rigour resumes the agent task with the result of your decision.
 
-Runs the full suite of Rigour quality gates on the current project state.
-
-**Arguments:**
-- `cwd` (optional): Absolute path to the project root.
-
-### `rigour_explain`
-
-Provides a human-readable explanation of why the last quality gate check failed.
-
-**Arguments:**
-- `cwd` (optional): Absolute path to the project root.
-
-### `rigour_status`
-
-A lightweight PASS/FAIL check that returns structured JSON. Ideal for agent polling.
-
-**Arguments:**
-- `cwd` (optional): Absolute path to the project root.
-
-### `rigour_get_fix_packet`
-
-Retrieves the prioritized **Fix Packet (Diagnostic)** containing actionable instructions for the agent to resolve quality gate violations.
-
-### `rigour_list_gates` & `rigour_get_config`
-
-Utility tools that allow the agent to inspect active gates and the project's `rigour.yml` configuration.
-
-### `rigour_record_failure` & `rigour_clear_failure`
-
-Specialty tools for tracking agent retry loops and enforcing quality guardrails during persistent failures.
+*This ensures that no critical commands are run without explicit engineering oversight.*
 
 ---
 
-## Context Memory Tools
-
-Rigour provides persistent memory that survives across AI sessions. Use these tools to store and retrieve context.
-
-### `rigour_remember`
-
-Store a key-value pair in persistent context memory.
-
-**Arguments:**
-- `key` (required): The memory key.
-- `value` (required): The value to store (string).
-- `cwd` (optional): Project root path.
-
-**Example:**
-```
-rigour_remember(key: "last_refactor", value: "Extracted auth logic to AuthService")
-```
-
-### `rigour_recall`
-
-Retrieve a value from context memory.
-
-**Arguments:**
-- `key` (required): The memory key to retrieve.
-- `cwd` (optional): Project root path.
-
-### `rigour_forget`
-
-Delete a key from context memory.
-
-**Arguments:**
-- `key` (required): The memory key to delete.
-- `cwd` (optional): Project root path.
-
-### `rigour_list_memories`
-
-List all stored memory keys.
-
-**Arguments:**
-- `cwd` (optional): Project root path.
-
----
-
-## Pattern Index Tools
-
-The Pattern Index enables semantic understanding of your codebase. Build the index first with `rigour index`.
-
-### `rigour_find_patterns`
-
-Search indexed patterns semantically or by keyword.
-
-**Arguments:**
-- `query` (required): Search query (natural language or keyword).
-- `semantic` (optional): Use semantic search with embeddings. Default: false.
-- `cwd` (optional): Project root path.
-
-**Example:**
-```
-rigour_find_patterns(query: "authentication middleware", semantic: true)
-```
-
-### `rigour_detect_staleness`
-
-Check for outdated patterns, dependencies, or deprecated APIs.
-
-**Arguments:**
-- `cwd` (optional): Project root path.
-
-**Returns:** List of stale patterns with recommendations.
-
----
-
-## The Stateless Workflow
-
-Rigour's MCP tools operate on the **current filesystem state**. Agents should follow this loop:
-
-1.  **Work**: Apply changes to the codebase.
-2.  **Audit**: Call `rigour_check` or `rigour_status`.
-3.  **Refine**: If failures occur, call `rigour_get_fix_packet` or `rigour_explain` once to get instructions.
-4.  **Repeat**: Resolve the issues and audit again until `PASS`.
-
-## Best Practices
-
-1. **Audit Before Done**: Never claim a task is complete without a `PASS` status from Rigour.
-2. **Read the Packet**: Use `rigour_get_fix_packet` to understand *how* to refactor (e.g., extracting functions to reduce complexity).
-3. **Reason about Rules**: Use `rigour_get_config` to understand project-specific constraints like protected paths or forbidden dependencies.
+## 💡 Pro Tip
+Always keep the [Rigour Studio](/concepts/governance-studio) open on a second monitor while working with MCP agents. It provides a visual audit trail of everything the agent is doing.

@@ -3,61 +3,37 @@ import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
 const sidebars: SidebarsConfig = {
   docsSidebar: [
     'intro',
+    'getting-started',
     {
       type: 'category',
-      label: 'Getting Started',
+      label: 'Core Features',
       collapsed: false,
       items: [
-        'getting-started/installation',
-        'getting-started/quick-start',
-        'getting-started/configuration',
+        'concepts/governance-studio',
+        'cli/index-command',
+        'mcp/mcp-server',
       ],
     },
     {
       type: 'category',
-      label: 'CLI',
+      label: 'Guides & Concepts',
       items: [
         'cli/commands',
-        'cli/exit-codes',
-        'cli/ci-integration',
-        'cli/interactive',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'MCP Integration',
-      items: [
-        'mcp/mcp-server',
         'mcp/memory-persistence',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Concepts',
-      items: [
-        'concepts/philosophy',
-        'concepts/modes',
-        'concepts/workflows',
-        'concepts/fix-packet',
-        'concepts/ast-gates',
-        'concepts/presets',
-        'concepts/ide-support',
-        'concepts/governance-studio',
-        'concepts/vibe-coding-guide',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Expert Guides & SME Cookbooks',
-      items: [
         'examples/sme-cookbooks',
         'examples/quality-handshake',
       ],
     },
     {
       type: 'category',
-      label: 'Reference',
+      label: 'Advanced Reference',
       items: [
+        'cli/exit-codes',
+        'cli/ci-integration',
+        'concepts/modes',
+        'concepts/ast-gates',
+        'concepts/presets',
+        'concepts/ide-support',
         'reference/configuration',
       ],
     },
