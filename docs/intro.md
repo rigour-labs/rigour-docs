@@ -1,3 +1,6 @@
+---
+slug: /
+---
 # 🛡️ Rigour
 
 **The Control Room for AI-Assisted Engineering.**
@@ -41,7 +44,7 @@ npx @rigour-labs/cli studio
 
 ## 📖 Where to Go Next?
 
-- **[Installation Guide](/getting-started/installation)**: For global setup and MCP server configuration.
+- **[Installation Guide](/getting-started)**: For global setup and MCP server configuration.
 - **[Governance Studio](/concepts/governance-studio)**: How to use the visual dashboard.
 - **[Pattern Index](/cli/index-command)**: Deep dive into semantic indexing.
 

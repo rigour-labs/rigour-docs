@@ -83,7 +83,7 @@ const config: Config = {
           items: [
             {
               label: 'Getting Started',
-              to: '/getting-started/installation',
+              to: '/getting-started',
             },
             {
               label: 'CLI Reference',
