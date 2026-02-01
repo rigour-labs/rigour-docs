@@ -108,7 +108,7 @@ Rigour is intentionally **local-first**. Unlike other governance tools that requ
 For security, your browser cannot run shell commands or read your hard drive. To bridge Rigour to a web app, you would need to use a **Secure Tunnel** (like `ngrok`) to expose a local SSE server. 
 
 > [!IMPORTANT]
-> To maintain the **Local Honest** moat, we recommend using Rigour with **Desktop AI Agents**. If you must use the web version, look into our [Future Vision](/future/secure-mirror) for the E2E-encrypted Secure Mirror.
+> To maintain the **Local Honest** moat, we recommend using Rigour with **Desktop AI Agents**. If you must use the web version, look into our [Remote MCP Server](/mcp/remote-mcp-server) for the E2E-encrypted connectivity.
 
 ---
 
