@@ -19,9 +19,8 @@ rigour check [options]
 | Flag | Description |
 |------|-------------|
 | `--ci` | CI mode with strict exit codes |
-| `--json` | Output results as JSON |
-| `--interactive` | **New**: Rich, interactive terminal output |
-| `--config <path>` | Custom config file path |
+| `--json` | Output results as JSON. **Note**: In v2.1+, all debug/info logs are silenced from `stdout` when this flag is active, ensuring `stdout` contains valid, parsable JSON. |
+| `--config <path>` | Path to a custom `rigour.yml` or `rigour_config.yaml`. Useful for ephemeral benchmarking or CI overrides. |
 
 ### Examples
 
