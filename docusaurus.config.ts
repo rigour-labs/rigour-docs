@@ -11,6 +11,38 @@ const config: Config = {
     v4: true,
   },
 
+  headTags: [
+    {
+      tagName: 'script',
+      attributes: {
+        type: 'application/ld+json',
+      },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Rigour Labs',
+        url: 'https://docs.rigour.run',
+        logo: 'https://docs.rigour.run/img/rigour-logo.png',
+        sameAs: [
+          'https://github.com/rigour-labs',
+          'https://rigour.run'
+        ],
+      }),
+    },
+    {
+      tagName: 'script',
+      attributes: {
+        type: 'application/ld+json',
+      },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Rigour Documentation',
+        url: 'https://docs.rigour.run',
+      }),
+    },
+  ],
+
   url: 'https://docs.rigour.run',
   baseUrl: '/',
 
@@ -44,11 +76,11 @@ const config: Config = {
   themeConfig: {
     image: 'img/rigour-social-card.jpg',
     metadata: [
-      { name: 'keywords', content: 'ai agent, code review, quality gate, ast, automation, devops' },
+      { name: 'keywords', content: 'AI agent documentation, MCP Server API, code review automation, quality gates, AST analysis, Rigour Labs, deterministic engineering' },
       { name: 'twitter:card', content: 'summary_large_image' },
       { property: 'og:type', content: 'website' },
-      { property: 'og:title', content: 'Rigour - No Bullshit Code Review for AI Agents' },
-      { property: 'og:description', content: 'Rigour acts as the Technical Contract that AI agents must satisfy before their work is accepted.' },
+      { property: 'og:title', content: 'Rigour Docs - Quality Gates for AI Agents' },
+      { property: 'og:description', content: 'The official documentation for Rigour, providing technical guardrails for AI-assisted engineering.' },
     ],
     colorMode: {
       defaultMode: 'dark',
