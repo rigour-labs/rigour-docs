@@ -20,6 +20,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install -g @rigour-labs/cli
+      - run: rigour check --ci
 ## Advanced CI Patterns
 
 ### 🦊 GitLab CI/CD
@@ -32,7 +37,7 @@ rigour-audit:
   image: node:20
   script:
     - npm ci
-    - npx @rigour-labs/cli check --ci --json > rigour-report.json || true
+    - npx rigour check --ci --json > rigour-report.json || true
     - # Fail the job if the status is FAIL in the JSON
     - if [ "$(grep -o '"status":"FAIL"' rigour-report.json)" ]; then exit 1; fi
   artifacts:
@@ -52,7 +57,7 @@ pipeline {
         stage('Rigour Audit') {
             steps {
                 script {
-                    def status = sh(script: "npx @rigour-labs/cli check --ci", returnStatus: true)
+                    def status = sh(script: "npx rigour check --ci", returnStatus: true)
                     if (status == 1) {
                         unstable("Rigour: Engineering violations found.")
                     } else if (status > 1) {

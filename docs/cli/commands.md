@@ -26,13 +26,13 @@ rigour check [options]
 
 ```bash
 # Basic check
-npx @rigour-labs/cli check
+npx rigour check
 
 # CI pipeline
-npx @rigour-labs/cli check --ci --json
+npx rigour check --ci --json
 
 # Custom config
-npx @rigour-labs/cli check --config ./custom-rigour.yaml
+npx rigour check --config ./custom-rigour.yaml
 ```
 
 ---
@@ -42,7 +42,7 @@ npx @rigour-labs/cli check --config ./custom-rigour.yaml
 Initialize Rigour in your project. This command creates a `rigour.yml` file and can automatically detect your project's role and coding paradigm.
 
 ```bash
-npx @rigour-labs/cli init [options]
+npx rigour init [options]
 ```
 
 ### Options
@@ -75,10 +75,10 @@ Paradigms layer specific AST (Abstract Syntax Tree) rules on top of your role.
 
 ```bash
 # Default initialization (Auto-discovery)
-npx @rigour-labs/cli init
+npx rigour init
 
 # Explicitly use API role with OOP paradigm
-npx @rigour-labs/cli init --preset api --paradigm oop
+npx rigour init --preset api --paradigm oop
 ```
 
 ### Framework Compatibility (Safe Scaffolding)
@@ -98,7 +98,7 @@ Simply move `rigour.yml` and the `docs/` folder aside temporarily, run your fram
 Get detailed explanation of validation results.
 
 ```bash
-npx @rigour-labs/cli explain [options]
+npx rigour explain [options]
 ```
 
 ### Options
@@ -112,10 +112,10 @@ npx @rigour-labs/cli explain [options]
 
 ```bash
 # Explain last check
-npx @rigour-labs/cli explain
+npx rigour explain
 
 # Analyze fix packet
-npx @rigour-labs/cli explain --fix-packet ./fix.json
+npx rigour explain --fix-packet ./fix.json
 ```
 
 ---
@@ -125,7 +125,7 @@ npx @rigour-labs/cli explain --fix-packet ./fix.json
 The **Supervisor Loop**. Executes an AI agent and automatically iterates until quality gates pass.
 
 ```bash
-npx @rigour-labs/cli run [options] -- <agent-command>
+npx rigour run [options] -- <agent-command>
 ```
 
 ### The Iterative Refinement Cycle
@@ -135,6 +135,16 @@ When you use `rigour run`, Rigour manages a stateful refinement loop:
 3.  **Audit**: Quality gates are checked against the resulting state.
 4.  **Refine**: If gates fail, Rigour generates a `rigour-fix-packet.json` (Diagnostic) and automatically re-invokes the agent to fix the violations.
 5.  **Finish**: The loop exits when all gates `PASS` or the maximum iterations are reached.
+
+### 🌗 Rigour Modes
+
+| Mode | Control | Use Case | Loop |
+| :--- | :--- | :--- | :--- |
+| **Advisor** | Suggestive | Code reviews & IDE suggestions | Single pass |
+| **Supervisor** | Enforcement | CI/CD gates & Autonomous agents | Iterative (Auto-fix) |
+
+> [!TIP]
+> Rigour CI/CD workflows primarily use **Supervisor mode** to ensure code quality through iterative refinement.
 
 ### Options
 
