@@ -78,6 +78,25 @@ Project-level preset that defines default gate thresholds.
 
 ---
 
+### `ignore`
+
+**Type:** `string[]`  
+**Default:** Auto-detected based on preset
+
+Glob patterns for files/directories to exclude from quality checks. When you run `rigour init`, this is automatically populated based on your project type.
+
+```yaml
+ignore:
+  - ".git/**"
+  - "node_modules/**"
+  - "venv/**"
+  - "__pycache__/**"
+  - "*.pyc"
+```
+
+> [!TIP]
+> The scanner always ignores `node_modules/**`, `dist/**`, `.git/**` at runtime even if not listed. Explicit ignores in the config are useful for project-specific patterns.
+
 ---
 
 ### `architecture.boundaries`

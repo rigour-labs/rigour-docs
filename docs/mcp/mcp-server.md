@@ -49,10 +49,24 @@ Once connected, your AI agent will automatically use these tools:
 |:---|:---|
 | `rigour_check` | Runs all quality gates on your code. |
 | `rigour_run` | **Interceptable** command execution (e.g., tests, deploys). |
+| `rigour_run_supervised` | **Full Supervisor Mode** - iterative loop until gates pass. |
 | `rigour_find_patterns` | Semantic search for codebase patterns. |
 | `rigour_remember` | Persist architectural decisions in memory. |
 | `rigour_recall` | Retrieve stored engineering context. |
 | `rigour_get_fix_packet` | Get precise refactoring instructions on failure. |
+
+### `rigour_run_supervised`
+Implements the full **Supervisor Mode** via MCP. Iteratively runs your agent command, checks gates, and provides fix packets until PASS or max retries.
+
+```typescript
+// Example MCP call
+rigour_run_supervised({
+  cwd: "/path/to/project",
+  command: "claude \"fix the auth bug\"",
+  maxRetries: 3,  // default: 3
+  dryRun: false   // skip command execution for testing
+})
+```
 
 ---
 

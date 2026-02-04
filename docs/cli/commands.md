@@ -81,6 +81,16 @@ npx rigour init
 npx rigour init --preset api --paradigm oop
 ```
 
+### Smart Ignore Detection
+When you run `rigour init`, Rigour automatically populates the `ignore:` field in `rigour.yml` based on detected project type:
+
+| Preset | Auto-Added Ignores |
+|:---|:---|
+| **api** | `.git/**`, `venv/**`, `__pycache__/**`, `node_modules/**`, `vendor/**` |
+| **ui** | `.git/**`, `node_modules/**`, `.next/**`, `.nuxt/**`, `dist/**` |
+| **infra** | `.git/**`, `.terraform/**`, `*.tfstate` |
+| **data** | `.git/**`, `.ipynb_checkpoints/**`, `dbt_packages/**` |
+
 ### Framework Compatibility (Safe Scaffolding)
 Many framework CLI tools (like `create-next-app` or `npm init vite`) require the target directory to be **completely empty**. If you run `rigour init` first, these tools will fail.
 
