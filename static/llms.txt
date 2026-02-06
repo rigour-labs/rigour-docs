@@ -165,6 +165,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install -g @rigour-labs/cli
+      - run: rigour check --ci
 ## Advanced CI Patterns
 
 ### 🦊 GitLab CI/CD
@@ -177,7 +182,7 @@ rigour-audit:
   image: node:20
   script:
     - npm ci
-    - npx @rigour-labs/cli check --ci --json > rigour-report.json || true
+    - npx rigour check --ci --json > rigour-report.json || true
     - # Fail the job if the status is FAIL in the JSON
     - if [ "$(grep -o '"status":"FAIL"' rigour-report.json)" ]; then exit 1; fi
   artifacts:
@@ -197,7 +202,7 @@ pipeline {
         stage('Rigour Audit') {
             steps {
                 script {
-                    def status = sh(script: "npx @rigour-labs/cli check --ci", returnStatus: true)
+                    def status = sh(script: "npx rigour check --ci", returnStatus: true)
                     if (status == 1) {
                         unstable("Rigour: Engineering violations found.")
                     } else if (status > 1) {
@@ -255,21 +260,20 @@ rigour check [options]
 | Flag | Description |
 |------|-------------|
 | `--ci` | CI mode with strict exit codes |
-| `--json` | Output results as JSON |
-| `--interactive` | **New**: Rich, interactive terminal output |
-| `--config <path>` | Custom config file path |
+| `--json` | Output results as JSON. **Note**: In v2.1+, all debug/info logs are silenced from `stdout` when this flag is active, ensuring `stdout` contains valid, parsable JSON. |
+| `--config <path>` | Path to a custom `rigour.yml` or `rigour_config.yaml`. Useful for ephemeral benchmarking or CI overrides. |
 
 ### Examples
 
 ```bash
 # Basic check
-npx @rigour-labs/cli check
+npx rigour check
 
 # CI pipeline
-npx @rigour-labs/cli check --ci --json
+npx rigour check --ci --json
 
 # Custom config
-npx @rigour-labs/cli check --config ./custom-rigour.yaml
+npx rigour check --config ./custom-rigour.yaml
 ```
 
 ---
@@ -279,7 +283,7 @@ npx @rigour-labs/cli check --config ./custom-rigour.yaml
 Initialize Rigour in your project. This command creates a `rigour.yml` file and can automatically detect your project's role and coding paradigm.
 
 ```bash
-npx @rigour-labs/cli init [options]
+npx rigour init [options]
 ```
 
 ### Options
@@ -312,11 +316,21 @@ Paradigms layer specific AST (Abstract Syntax Tree) rules on top of your role.
 
 ```bash
 # Default initialization (Auto-discovery)
-npx @rigour-labs/cli init
+npx rigour init
 
 # Explicitly use API role with OOP paradigm
-npx @rigour-labs/cli init --preset api --paradigm oop
+npx rigour init --preset api --paradigm oop
 ```
+
+### Smart Ignore Detection
+When you run `rigour init`, Rigour automatically populates the `ignore:` field in `rigour.yml` based on detected project type:
+
+| Preset | Auto-Added Ignores |
+|:---|:---|
+| **api** | `.git/**`, `venv/**`, `__pycache__/**`, `node_modules/**`, `vendor/**` |
+| **ui** | `.git/**`, `node_modules/**`, `.next/**`, `.nuxt/**`, `dist/**` |
+| **infra** | `.git/**`, `.terraform/**`, `*.tfstate` |
+| **data** | `.git/**`, `.ipynb_checkpoints/**`, `dbt_packages/**` |
 
 ### Framework Compatibility (Safe Scaffolding)
 Many framework CLI tools (like `create-next-app` or `npm init vite`) require the target directory to be **completely empty**. If you run `rigour init` first, these tools will fail.
@@ -335,7 +349,7 @@ Simply move `rigour.yml` and the `docs/` folder aside temporarily, run your fram
 Get detailed explanation of validation results.
 
 ```bash
-npx @rigour-labs/cli explain [options]
+npx rigour explain [options]
 ```
 
 ### Options
@@ -349,10 +363,10 @@ npx @rigour-labs/cli explain [options]
 
 ```bash
 # Explain last check
-npx @rigour-labs/cli explain
+npx rigour explain
 
 # Analyze fix packet
-npx @rigour-labs/cli explain --fix-packet ./fix.json
+npx rigour explain --fix-packet ./fix.json
 ```
 
 ---
@@ -362,7 +376,7 @@ npx @rigour-labs/cli explain --fix-packet ./fix.json
 The **Supervisor Loop**. Executes an AI agent and automatically iterates until quality gates pass.
 
 ```bash
-npx @rigour-labs/cli run [options] -- <agent-command>
+npx rigour run [options] -- <agent-command>
 ```
 
 ### The Iterative Refinement Cycle
@@ -372,6 +386,16 @@ When you use `rigour run`, Rigour manages a stateful refinement loop:
 3.  **Audit**: Quality gates are checked against the resulting state.
 4.  **Refine**: If gates fail, Rigour generates a `rigour-fix-packet.json` (Diagnostic) and automatically re-invokes the agent to fix the violations.
 5.  **Finish**: The loop exits when all gates `PASS` or the maximum iterations are reached.
+
+### 🌗 Rigour Modes
+
+| Mode | Control | Use Case | Loop |
+| :--- | :--- | :--- | :--- |
+| **Advisor** | Suggestive | Code reviews & IDE suggestions | Single pass |
+| **Supervisor** | Enforcement | CI/CD gates & Autonomous agents | Iterative (Auto-fix) |
+
+> [!TIP]
+> Rigour CI/CD workflows primarily use **Supervisor mode** to ensure code quality through iterative refinement.
 
 ### Options
 
@@ -648,6 +672,109 @@ npx @rigour-labs/cli guide
 
 ---
 
+## CONCEPTS/AGENT-TEAMS
+
+# Agent Teams
+
+> **Available in Rigour v2.14+** | Requires Opus 4.6/GPT-5.3+ frontier models
+
+Agent Teams enable Rigour to supervise multiple AI agents working together on the same codebase—a capability unlocked by frontier models like Claude Opus 4.6 (agent teams) and GPT-5.3-Codex (coworking mode).
+
+## Why Agent Team Governance?
+
+Traditional Rigour supervision assumes a single agent making changes. With frontier models now supporting:
+- **Agent Teams** (Opus 4.6): Multiple agents collaborating with specialized roles
+- **Coworking Mode** (GPT-5.3): Real-time steering during long-running tasks
+
+New failure modes emerge:
+- Cross-agent pattern conflicts
+- Task ownership violations
+- Handoff context loss
+- Duplicate work detection failures
+
+## Configuration
+
+```yaml
+# rigour.yml
+gates:
+  agent_team:
+    enabled: true
+    max_concurrent_agents: 3
+    cross_agent_pattern_check: true
+    handoff_verification: true
+    task_ownership: strict  # or "collaborative"
+```
+
+| Option | Default | Description |
+|:---|:---:|:---|
+| `enabled` | `false` | Enable multi-agent governance |
+| `max_concurrent_agents` | `3` | Max agents in a session |
+| `cross_agent_pattern_check` | `true` | Detect conflicting patterns |
+| `handoff_verification` | `true` | Verify context at handoffs |
+| `task_ownership` | `strict` | `strict` = 1 agent per file, `collaborative` = allow overlap |
+
+## MCP Integration
+
+Register agents via MCP:
+
+```typescript
+// Agent A registers
+await mcp.call("rigour_agent_register", {
+  cwd: "/project",
+  agent_id: "agent-a",
+  task_scope: ["src/api/**"]
+});
+
+// Agent B registers
+await mcp.call("rigour_agent_register", {
+  cwd: "/project",
+  agent_id: "agent-b", 
+  task_scope: ["src/ui/**"]
+});
+```
+
+## Task Ownership Models
+
+### Strict Mode (Default)
+
+Each agent owns specific files/directories. Rigour blocks:
+- Any agent editing files outside their scope
+- Multiple agents claiming the same scope
+
+**Best for**: Parallel development, clear separation of concerns
+
+### Collaborative Mode
+
+Agents can overlap with conflict resolution:
+- Rigour detects conflicting changes
+- Prompts for human arbitration via Studio
+
+**Best for**: Pair programming, complex refactoring
+
+## Cross-Agent Pattern Detection
+
+Rigour detects when agents introduce conflicting patterns:
+
+```
+⛔ AGENT TEAM CONFLICT DETECTED
+
+Agent A (src/api/users.ts):
+  - Using: camelCase naming
+  - Pattern: async/await
+
+Agent B (src/api/orders.ts):
+  - Using: snake_case naming  ← CONFLICT
+  - Pattern: async/await      ✓ OK
+```
+
+## See Also
+
+- [Checkpoint Supervision](./checkpoint-supervision.md) – Long-running task monitoring
+- [MCP Server](../mcp/mcp-server.md) – Agent registration tools
+
+
+---
+
 ## CONCEPTS/AST-GATES
 
 # AST Gates: Technical Reference
@@ -744,6 +871,111 @@ Rigour's AST engine is designed specifically to help agents **refactor**.
 
 When a `complexity` gate fails, Rigour doesn't just say "Fix it." The Fix Packet contains instructions like:
 > "Function 'processOrder' is too complex. Extract the 'TaxCalculation' block into a separate function to lower the score."
+
+
+---
+
+## CONCEPTS/CHECKPOINT-SUPERVISION
+
+# Checkpoint Supervision
+
+> **Available in Rigour v2.14+** | For long-running agent tasks
+
+Checkpoint Supervision enables Rigour to monitor agent quality during extended execution—essential for frontier models like GPT-5.3-Codex that support "coworking mode" with long-running autonomous tasks.
+
+## The Problem
+
+Traditional Rigour checks run at task completion. But with frontier models executing tasks over 15+ minutes:
+- Agent behavior may **degrade over time** (drift)
+- Large change sets become **harder to review**
+- Early failures waste **accumulated work**
+
+## How It Works
+
+```
+Task Start
+    ↓
+[15 min] → Checkpoint 1 → Score ≥ 80%? → Continue
+    ↓                         ↓
+[30 min] → Checkpoint 2 → Score < 80%? → Alert + Auto-Save
+    ↓
+Task Complete → Final Verification
+```
+
+## Configuration
+
+```yaml
+# rigour.yml
+gates:
+  checkpoint:
+    enabled: true
+    interval_minutes: 15
+    quality_threshold: 80
+    drift_detection: true
+    auto_save_on_failure: true
+```
+
+| Option | Default | Description |
+|:---|:---:|:---|
+| `enabled` | `false` | Enable checkpoint supervision |
+| `interval_minutes` | `15` | Time between checkpoints |
+| `quality_threshold` | `80` | Min quality score to continue |
+| `drift_detection` | `true` | Monitor for behavior regression |
+| `auto_save_on_failure` | `true` | Save work before aborting |
+
+## MCP Integration
+
+Agents report checkpoints via MCP:
+
+```typescript
+await mcp.call("rigour_checkpoint", {
+  cwd: "/project",
+  progress_pct: 50,
+  files_changed: ["src/api/users.ts", "src/api/orders.ts"],
+  summary: "Implemented user and order API endpoints"
+});
+
+// Response
+{
+  continue: true,
+  quality_score: 85,
+  warnings: ["src/api/users.ts exceeds 300 lines"]
+}
+```
+
+## Drift Detection
+
+Rigour tracks quality scores over time to detect regression:
+
+```
+Checkpoint 1: 92% ✓
+Checkpoint 2: 88% ✓
+Checkpoint 3: 72% ⚠️ DRIFT DETECTED
+```
+
+When drift is detected:
+1. Agent receives immediate feedback
+2. Work is auto-saved
+3. Studio shows drift timeline
+
+## Studio Integration
+
+The **Checkpoints** tab in Rigour Studio visualizes:
+- Timeline of checkpoint events
+- Quality score trends
+- Drift detection alerts
+- Auto-save recovery points
+
+## Best Practices
+
+1. **Set realistic intervals**: 15 min default works for most tasks
+2. **Tune quality threshold**: Lower for exploratory work, higher for production code
+3. **Review drift patterns**: Use Studio to identify when/why quality degrades
+
+## See Also
+
+- [Agent Teams](./agent-teams.md) – Multi-agent coordination
+- [Quality Gates](../gates/quality-gates.md) – Gate configuration
 
 
 ---
@@ -1567,10 +1799,51 @@ Once connected, your AI agent will automatically use these tools:
 |:---|:---|
 | `rigour_check` | Runs all quality gates on your code. |
 | `rigour_run` | **Interceptable** command execution (e.g., tests, deploys). |
+| `rigour_run_supervised` | **Full Supervisor Mode** - iterative loop until gates pass. |
 | `rigour_find_patterns` | Semantic search for codebase patterns. |
 | `rigour_remember` | Persist architectural decisions in memory. |
 | `rigour_recall` | Retrieve stored engineering context. |
 | `rigour_get_fix_packet` | Get precise refactoring instructions on failure. |
+
+### New Tools (v2.14+ – Frontier Model Support)
+
+These tools enable supervision of Opus 4.6 agent teams and GPT-5.3 coworking mode:
+
+| Tool | Purpose |
+|:---|:---|
+| `rigour_checkpoint` | Report checkpoint status during long-running tasks. |
+| `rigour_agent_register` | Register an agent in a multi-agent team session. |
+| `rigour_security_patterns` | Pre-commit security pattern check. |
+
+```typescript
+// Agent team example
+await mcp.call("rigour_agent_register", {
+  cwd: "/project",
+  agent_id: "agent-frontend",
+  task_scope: ["src/ui/**", "src/components/**"]
+});
+
+// Checkpoint during long task
+await mcp.call("rigour_checkpoint", {
+  cwd: "/project",
+  progress_pct: 50,
+  files_changed: ["src/api/users.ts"],
+  summary: "Implemented user endpoints"
+});
+```
+
+### `rigour_run_supervised`
+Implements the full **Supervisor Mode** via MCP. Iteratively runs your agent command, checks gates, and provides fix packets until PASS or max retries.
+
+```typescript
+// Example MCP call
+rigour_run_supervised({
+  cwd: "/path/to/project",
+  command: "claude \"fix the auth bug\"",
+  maxRetries: 3,  // default: 3
+  dryRun: false   // skip command execution for testing
+})
+```
 
 ---
 
@@ -2003,6 +2276,25 @@ Project-level preset that defines default gate thresholds.
 
 ---
 
+### `ignore`
+
+**Type:** `string[]`  
+**Default:** Auto-detected based on preset
+
+Glob patterns for files/directories to exclude from quality checks. When you run `rigour init`, this is automatically populated based on your project type.
+
+```yaml
+ignore:
+  - ".git/**"
+  - "node_modules/**"
+  - "venv/**"
+  - "__pycache__/**"
+  - "*.pyc"
+```
+
+> [!TIP]
+> The scanner always ignores `node_modules/**`, `dist/**`, `.git/**` at runtime even if not listed. Explicit ignores in the config are useful for project-specific patterns.
+
 ---
 
 ### `architecture.boundaries`
@@ -2067,6 +2359,51 @@ gates:
 | Option | Type | Description |
 |:---|:---:|:---|
 | `risk_adjusted` | `boolean` | If true, complex files (complexity > 10) require >80% coverage. |
+
+---
+
+### `gates.agent_team` (v2.14+)
+**Description**: Configures multi-agent governance for frontier models (Opus 4.6, GPT-5.3).
+
+```yaml
+gates:
+  agent_team:
+    enabled: true
+    max_concurrent_agents: 3
+    cross_agent_pattern_check: true
+    handoff_verification: true
+    task_ownership: strict
+```
+
+| Option | Default | Description |
+|:---|:---:|:---|
+| `enabled` | `false` | Enable multi-agent governance. |
+| `max_concurrent_agents` | `3` | Maximum agents in a session. |
+| `cross_agent_pattern_check` | `true` | Detect conflicting patterns across agents. |
+| `handoff_verification` | `true` | Verify context at agent handoffs. |
+| `task_ownership` | `strict` | `strict` = 1 agent/file, `collaborative` = overlap OK. |
+
+---
+
+### `gates.checkpoint` (v2.14+)
+**Description**: Configures checkpoint supervision for long-running agent tasks.
+
+```yaml
+gates:
+  checkpoint:
+    enabled: true
+    interval_minutes: 15
+    quality_threshold: 80
+    drift_detection: true
+```
+
+| Option | Default | Description |
+|:---|:---:|:---|
+| `enabled` | `false` | Enable checkpoint supervision. |
+| `interval_minutes` | `15` | Time between checkpoint checks. |
+| `quality_threshold` | `80` | Minimum score to continue (0-100). |
+| `drift_detection` | `true` | Monitor for quality regression over time. |
+| `auto_save_on_failure` | `true` | Save work before aborting on failure. |
 
 ---
 

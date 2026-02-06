@@ -164,6 +164,79 @@ gates:
 
 ---
 
+### `gates.agent_team` (v2.14+)
+**Description**: Configures multi-agent governance for frontier models (Opus 4.6, GPT-5.3).
+
+```yaml
+gates:
+  agent_team:
+    enabled: true
+    max_concurrent_agents: 3
+    cross_agent_pattern_check: true
+    handoff_verification: true
+    task_ownership: strict
+```
+
+| Option | Default | Description |
+|:---|:---:|:---|
+| `enabled` | `false` | Enable multi-agent governance. |
+| `max_concurrent_agents` | `3` | Maximum agents in a session. |
+| `cross_agent_pattern_check` | `true` | Detect conflicting patterns across agents. |
+| `handoff_verification` | `true` | Verify context at agent handoffs. |
+| `task_ownership` | `strict` | `strict` = 1 agent/file, `collaborative` = overlap OK. |
+
+---
+
+### `gates.checkpoint` (v2.14+)
+**Description**: Configures checkpoint supervision for long-running agent tasks.
+
+```yaml
+gates:
+  checkpoint:
+    enabled: true
+    interval_minutes: 15
+    quality_threshold: 80
+    drift_detection: true
+```
+
+| Option | Default | Description |
+|:---|:---:|:---|
+| `enabled` | `false` | Enable checkpoint supervision. |
+| `interval_minutes` | `15` | Time between checkpoint checks. |
+| `quality_threshold` | `80` | Minimum score to continue (0-100). |
+| `drift_detection` | `true` | Monitor for quality regression over time. |
+| `auto_save_on_failure` | `true` | Save work before aborting on failure. |
+
+---
+
+### `gates.security.patterns` (v2.14+)
+**Description**: Configures pattern-based security vulnerability detection.
+
+```yaml
+gates:
+  security:
+    patterns:
+      enabled: true
+      sql_injection: true
+      xss: true
+      path_traversal: true
+      hardcoded_secrets: true
+      insecure_randomness: true
+    block_on_severity: high
+```
+
+| Option | Default | Description |
+|:---|:---:|:---|
+| `enabled` | `false` | Enable security pattern scanning. |
+| `sql_injection` | `true` | Detect SQL injection patterns. |
+| `xss` | `true` | Detect XSS vulnerabilities. |
+| `path_traversal` | `true` | Detect path traversal attacks. |
+| `hardcoded_secrets` | `true` | Detect hardcoded API keys/passwords. |
+| `insecure_randomness` | `true` | Detect insecure random number usage. |
+| `block_on_severity` | `high` | Block commits on this severity or above (`critical`, `high`, `medium`). |
+
+---
+
 ## Universal Language Support
 Rigour provides built-in, syntax-aware AST analysis for:
 **TypeScript, JavaScript, Go, Rust, Python, Java, C#, C, C++, PHP, Swift, and Kotlin.**

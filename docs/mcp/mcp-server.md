@@ -55,6 +55,33 @@ Once connected, your AI agent will automatically use these tools:
 | `rigour_recall` | Retrieve stored engineering context. |
 | `rigour_get_fix_packet` | Get precise refactoring instructions on failure. |
 
+### New Tools (v2.14+ – Frontier Model Support)
+
+These tools enable supervision of Opus 4.6 agent teams and GPT-5.3 coworking mode:
+
+| Tool | Purpose |
+|:---|:---|
+| `rigour_checkpoint` | Report checkpoint status during long-running tasks. |
+| `rigour_agent_register` | Register an agent in a multi-agent team session. |
+| `rigour_security_patterns` | Pre-commit security pattern check. |
+
+```typescript
+// Agent team example
+await mcp.call("rigour_agent_register", {
+  cwd: "/project",
+  agent_id: "agent-frontend",
+  task_scope: ["src/ui/**", "src/components/**"]
+});
+
+// Checkpoint during long task
+await mcp.call("rigour_checkpoint", {
+  cwd: "/project",
+  progress_pct: 50,
+  files_changed: ["src/api/users.ts"],
+  summary: "Implemented user endpoints"
+});
+```
+
 ### `rigour_run_supervised`
 Implements the full **Supervisor Mode** via MCP. Iteratively runs your agent command, checks gates, and provides fix packets until PASS or max retries.
 
