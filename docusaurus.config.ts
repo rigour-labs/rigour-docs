@@ -73,6 +73,10 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    '@docusaurus/plugin-vercel-analytics',
+  ],
+
   themeConfig: {
     image: 'img/rigour-social-card.jpg',
     metadata: [
