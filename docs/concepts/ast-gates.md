@@ -25,7 +25,7 @@ Rigour provides high-fidelity structural checks (Complexity, Nesting, Params) fo
 
 ---
 
-## Safety Rails (Core)
+## Structural Rails (Core)
 
 ### `complexity`
 - **ID**: `SME_COGNITIVE_LOAD` (Universal) or `AST_COMPLEXITY` (TS/JS)

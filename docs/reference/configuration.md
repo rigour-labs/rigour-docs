@@ -31,7 +31,7 @@ gates:
     complexity: 10
     max_params: 5
     
-  # Safety Rails
+  # File Guard (protected paths)
   safety:
     max_files_changed_per_cycle: 10
     protected_paths:
@@ -227,7 +227,7 @@ gates:
 
 | Option | Default | Description |
 |:---|:---:|:---|
-| `enabled` | `false` | Enable security pattern scanning. |
+| `enabled` | `true` | Enable security pattern scanning (enabled by default since v2.15). |
 | `sql_injection` | `true` | Detect SQL injection patterns. |
 | `xss` | `true` | Detect XSS vulnerabilities. |
 | `path_traversal` | `true` | Detect path traversal attacks. |

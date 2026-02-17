@@ -163,7 +163,7 @@ When you use `rigour run`, Rigour manages a stateful refinement loop:
 | `--iterations <n>` | `3` | Maximum number of refinement cycles |
 | `--fail-fast` | `false` | Terminate instantly on the first violation |
 
-### Safety Rails
+### File Guard
 `rigour run` prevents "agent explosions" by monitoring the cycle delta. If an agent changes more than `max_files_changed_per_cycle` (set in `rigour.yml`), the loop is instantly aborted.
 
 ---
