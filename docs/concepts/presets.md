@@ -62,6 +62,42 @@ Optimized for reproducibility and pipeline clarity.
 
 ---
 
+## Industry Presets (v2.17+)
+
+Compliance-tuned presets for regulated industries with stricter thresholds and documentation requirements.
+
+### `healthcare` (HIPAA / FDA)
+Enforces PHI protection and audit trail documentation.
+- **Detection**: `hl7`, `fhir`, `hipaa`, `medical`, `patient`, `health`, `ehr`, `phi`, `dicom`
+- **Thresholds**:
+  - `max_file_lines`: `300`
+  - `security.block_on_severity`: `critical`
+- **Required Docs**: `docs/COMPLIANCE.md`, `docs/SPEC.md`, `docs/ARCH.md`, `README.md`
+
+### `fintech` (SOC2 / PCI-DSS)
+Agent team governance and strict security thresholds for financial codebases.
+- **Detection**: `trading`, `payment`, `kyc`, `aml`, `pci`, `transaction`, `ledger`, `banking`, `stripe`, `plaid`
+- **Thresholds**:
+  - `max_file_lines`: `350`
+  - `security.block_on_severity`: `high`
+  - `agent_team.enabled`: `true`
+- **Required Docs**: `docs/AUDIT_LOG.md`, `docs/SPEC.md`, `docs/ARCH.md`, `README.md`
+
+### `government` (FedRAMP / NIST)
+Maximum strictness with full governance controls.
+- **Detection**: `fedramp`, `nist`, `cmmc`, `federal`, `govcloud`, `il4`, `il5`, `fisma`, `itar`
+- **Thresholds**:
+  - `max_file_lines`: `250`
+  - `ast.complexity`: `8`
+  - `security.block_on_severity`: `medium`
+  - `agent_team.enabled`: `true`
+  - `checkpoint.enabled`: `true`
+- **Required Docs**: `docs/SECURITY.md`, `docs/SPEC.md`, `docs/ARCH.md`, `README.md`
+
+See the [Industry Presets guide](/concepts/industry-presets) for full configuration details.
+
+---
+
 ## Coding Paradigms (`paradigm`)
 
 Paradigms apply syntax-aware AST rules. Rigour scans your source code content to detect the dominant paradigm.

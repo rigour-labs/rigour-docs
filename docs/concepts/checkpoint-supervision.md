@@ -100,4 +100,4 @@ The **Checkpoints** tab in Rigour Studio visualizes:
 ## See Also
 
 - [Agent Teams](./agent-teams.md) – Multi-agent coordination
-- [Quality Gates](../gates/quality-gates.md) – Gate configuration
+- [Configuration Reference](../reference/configuration.md) – Gate configuration

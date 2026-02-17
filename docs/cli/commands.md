@@ -49,7 +49,7 @@ npx rigour init [options]
 
 | Flag | Description |
 |------|-------------|
-| `--preset <name>` | Explicitly set a **Project Role** (`api`, `ui`, `infra`, `data`) |
+| `--preset <name>` | Explicitly set a **Project Role** (`api`, `ui`, `infra`, `data`, `healthcare`, `fintech`, `government`) |
 | `--paradigm <name>` | Explicitly set a **Coding Paradigm** (`oop`, `functional`) |
 | `--force` | Overwrite existing `rigour.yml` config |
 
@@ -62,6 +62,9 @@ Roles define the high-level engineering standards and gate thresholds.
 | `ui` | Web/Frontends | 300 line limit, JSX-aware complexity |
 | `infra` | IaC (Terraform) | Protected `.github/` and CI configs |
 | `data` | Data/ML Pipelines | 500 line limit, reproducibility gates |
+| `healthcare` | HIPAA / FDA | 300 line limit, security blocks critical, COMPLIANCE.md required |
+| `fintech` | SOC2 / PCI-DSS | 350 line limit, agent team governance, AUDIT_LOG.md required |
+| `government` | FedRAMP / NIST | 250 line limit, complexity 8, checkpoint supervision |
 
 ### Coding Paradigms (`--paradigm`)
 Paradigms layer specific AST (Abstract Syntax Tree) rules on top of your role.
@@ -165,6 +168,42 @@ When you use `rigour run`, Rigour manages a stateful refinement loop:
 
 ### File Guard
 `rigour run` prevents "agent explosions" by monitoring the cycle delta. If an agent changes more than `max_files_changed_per_cycle` (set in `rigour.yml`), the loop is instantly aborted.
+
+---
+
+## `rigour export-audit`
+
+Generate a compliance audit package from the last quality gate check. The artifact compliance officers hand to auditors.
+
+```bash
+rigour export-audit [options]
+```
+
+### Options
+
+| Flag | Default | Description |
+|:-----|:--------|:------------|
+| `-f, --format <type>` | `json` | Output format: `json` or `md` |
+| `-o, --output <path>` | Auto | Custom output file path |
+| `--run` | `false` | Run a fresh `rigour check` before exporting |
+
+### Examples
+
+```bash
+# Export JSON audit package
+rigour export-audit
+
+# Export Markdown report for compliance review
+rigour export-audit --format md
+
+# Run check first, then export
+rigour export-audit --run
+
+# Custom output path
+rigour export-audit -o audit.json
+```
+
+The audit package includes score breakdowns, severity/provenance analysis, gate results, violations, and score trends. See the [Export Audit reference](/cli/export-audit) for the full JSON schema.
 
 ---
 

@@ -71,10 +71,10 @@ Maximum number of files that can be changed in a single agent turn before Rigour
 
 ### `preset`
 
-**Type:** `string`  
-**Options:** `api`, `ui`, `infra`, `data`
+**Type:** `string`
+**Options:** `api`, `ui`, `infra`, `data`, `healthcare`, `fintech`, `government`
 
-Project-level preset that defines default gate thresholds.
+Project-level preset that defines default gate thresholds. Industry presets (`healthcare`, `fintech`, `government`) include compliance-tuned security thresholds and documentation requirements. See [Industry Presets](/concepts/industry-presets).
 
 ---
 
@@ -234,6 +234,44 @@ gates:
 | `hardcoded_secrets` | `true` | Detect hardcoded API keys/passwords. |
 | `insecure_randomness` | `true` | Detect insecure random number usage. |
 | `block_on_severity` | `high` | Block commits on this severity or above (`critical`, `high`, `medium`). |
+
+---
+
+### `gates.promise_safety` (v2.17+)
+**Description**: Detects unhandled promises and unsafe async patterns across 6 languages.
+
+```yaml
+gates:
+  promise_safety:
+    enabled: true
+    severity: high
+```
+
+| Option | Default | Description |
+|:---|:---:|:---|
+| `enabled` | `true` | Enable promise safety detection. |
+| `severity` | `high` | Severity level for violations. |
+
+Supported: JavaScript/TypeScript, Python, Go, Ruby, C#, Java. See [AI-Native Gates](/concepts/ai-gates).
+
+---
+
+### `gates.hallucinated_imports` (v2.17+)
+**Description**: Detects import statements referencing packages not in the project's dependency manifest.
+
+```yaml
+gates:
+  hallucinated_imports:
+    enabled: true
+    severity: critical
+```
+
+| Option | Default | Description |
+|:---|:---:|:---|
+| `enabled` | `true` | Enable hallucinated import detection. |
+| `severity` | `critical` | Severity level for violations. |
+
+Supported: JavaScript/TypeScript, Python, Go, Ruby, C#, Java. See [AI-Native Gates](/concepts/ai-gates).
 
 ---
 

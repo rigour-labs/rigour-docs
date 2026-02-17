@@ -10,6 +10,7 @@ const sidebars: SidebarsConfig = {
       collapsed: false,
       items: [
         'concepts/governance-studio',
+        'concepts/ai-gates',
         'cli/index-command',
         'mcp/mcp-server',
       ],
@@ -19,6 +20,8 @@ const sidebars: SidebarsConfig = {
       label: 'Guides & Concepts',
       items: [
         'cli/commands',
+        'concepts/industry-presets',
+        'concepts/score-trending',
         'mcp/memory-persistence',
         'examples/sme-cookbooks',
         'examples/quality-handshake',
@@ -30,6 +33,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'cli/exit-codes',
         'cli/ci-integration',
+        'cli/export-audit',
         'concepts/modes',
         'concepts/ast-gates',
         'concepts/presets',
