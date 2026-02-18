@@ -4,10 +4,21 @@ Rigour is designed to be set up in under 60 seconds. You can run it directly wit
 
 ---
 
+## See It First
+
+Before installing anything, watch the cinematic demo:
+
+```bash
+npx @rigour-labs/cli demo --cinematic
+```
+
+![Rigour Demo](/img/demo.gif)
+
+---
+
 ## 1. Installation
 
 ### The Zero-Install Way (Recommended)
-You don't need to install anything. Just run:
 ```bash
 npx @rigour-labs/cli --help
 ```
@@ -19,33 +30,25 @@ npm install -g @rigour-labs/cli
 
 ---
 
-## 2. Project Setup (The 3 Commands)
+## 2. Project Setup (3 Commands)
 
-Run these in your project root to start governing your AI agents:
-
-### 1. Initialize
-Align Rigour with your project's technology stack.
 ```bash
-npx @rigour-labs/cli init
+npx @rigour-labs/cli init          # auto-detects stack, IDE, installs hooks
+npx @rigour-labs/cli check         # run all quality gates
+npx @rigour-labs/cli hooks init    # install real-time hooks for your AI tool
 ```
 
-### 2. Build the Index
-Create a semantic map of your code so AI agents can "reason" about your architecture.
-```bash
-npx @rigour-labs/cli index --semantic
-```
-
-### 3. Launch Studio
-Start the visual dashboard to monitor AI tool calls in real-time.
-```bash
-npx @rigour-labs/cli studio
-```
+`rigour init` automatically:
+- Detects your project role (API, UI, infra, data) and paradigm (OOP, functional)
+- Creates IDE-specific config files (Claude, Cursor, Cline, Windsurf, Gemini, Codex)
+- Installs real-time hooks for your detected AI tool
+- Configures `.gitignore` with Rigour artifacts
 
 ---
 
 ## 3. Fast Verification
 
-To see Rigour in action immediately:
+To see Rigour catch real issues immediately:
 
 1. Create a "messy" file `bad.py`:
    ```python
@@ -61,7 +64,22 @@ To see Rigour in action immediately:
 
 ---
 
+## 4. Demo Modes
+
+Explore all demo modes to see different aspects of Rigour:
+
+```bash
+npx @rigour-labs/cli demo                 # default: full gate check
+npx @rigour-labs/cli demo --hooks         # hooks simulation only
+npx @rigour-labs/cli demo --cinematic     # full cinematic: hooks → gates → fix → score
+npx @rigour-labs/cli demo --speed fast    # speed up for quick demos
+```
+
+---
+
 ## Next Steps
+- **[Real-Time Hooks](/concepts/hooks)**: Set up hooks for Claude, Cursor, Cline, or Windsurf.
 - **[CLI Commands](/cli/commands)**: Full reference of all options.
+- **[OWASP Coverage](/concepts/owasp-coverage)**: See how Rigour covers all 10 OWASP LLM risks.
 - **[Governance Studio](/concepts/governance-studio)**: How to use the visual control room.
 - **[MCP Server](/mcp/mcp-server)**: Connecting Rigour directly to Cursor or Claude Code.

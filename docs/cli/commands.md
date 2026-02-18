@@ -236,6 +236,68 @@ Rigour Studio provides a high-fidelity interface for monitoring AI agents as the
 
 ---
 
+## `rigour hooks init`
+
+Install real-time hooks for your AI coding tool. Hooks catch issues **the instant code is written** — before files are saved.
+
+```bash
+npx rigour hooks init [options]
+```
+
+### Options
+
+| Flag | Description |
+|------|-------------|
+| `--tool <name>` | Target tool: `claude`, `cursor`, `cline`, `windsurf` (auto-detected if not specified) |
+| `--force` | Overwrite existing hook configuration |
+| `--dry-run` | Preview changes without writing files |
+
+### Examples
+
+```bash
+# Auto-detect and install
+npx rigour hooks init
+
+# Install for specific tool
+npx rigour hooks init --tool claude
+
+# Preview what would be installed
+npx rigour hooks init --dry-run
+```
+
+See [Real-Time Hooks](/concepts/hooks) for details on what hooks catch and how they work.
+
+---
+
+## `rigour demo`
+
+Run a live demonstration of Rigour's capabilities. Ideal for presentations, onboarding, and quick evaluation.
+
+```bash
+npx rigour demo [options]
+```
+
+### Options
+
+| Flag | Default | Description |
+|:---|:---:|:---|
+| `--cinematic` | `false` | Full cinematic mode: hooks → gates → fix → score improvement |
+| `--hooks` | `false` | Hooks-only simulation showing real-time interception |
+| `--speed <level>` | `normal` | Animation speed: `fast`, `normal`, `slow` |
+
+### Examples
+
+```bash
+# Default demo with full gate check
+npx rigour demo
+
+# Cinematic mode (recommended for first impression)
+npx rigour demo --cinematic
+
+# Quick hooks-only demo
+npx rigour demo --hooks --speed fast
+```
+
 ---
 
 ## Technical Reference: The Quality Score

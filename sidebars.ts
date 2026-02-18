@@ -9,8 +9,10 @@ const sidebars: SidebarsConfig = {
       label: 'Core Features',
       collapsed: false,
       items: [
-        'concepts/governance-studio',
+        'concepts/hooks',
+        'concepts/owasp-coverage',
         'concepts/ai-gates',
+        'concepts/governance-studio',
         'cli/index-command',
         'mcp/mcp-server',
       ],
@@ -20,6 +22,7 @@ const sidebars: SidebarsConfig = {
       label: 'Guides & Concepts',
       items: [
         'cli/commands',
+        'concepts/ide-support',
         'concepts/industry-presets',
         'concepts/score-trending',
         'mcp/memory-persistence',
@@ -37,7 +40,6 @@ const sidebars: SidebarsConfig = {
         'concepts/modes',
         'concepts/ast-gates',
         'concepts/presets',
-        'concepts/ide-support',
         'reference/configuration',
       ],
     },
