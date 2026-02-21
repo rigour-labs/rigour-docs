@@ -77,9 +77,70 @@ npx @rigour-labs/cli demo --speed fast    # speed up for quick demos
 
 ---
 
+## 5. Deep Analysis (Optional)
+
+Deep Analysis uses LLM interpretation to check code against 40+ quality categories (SOLID, design patterns, concurrency, architecture). Enable it for advanced semantic analysis:
+
+### Step 1: Check System Readiness
+
+```bash
+rigour setup
+```
+
+This displays your installation status, API key configuration, and deep analysis readiness.
+
+### Step 2: Configure API Key
+
+```bash
+# Interactive configuration
+rigour setup --configure anthropic
+
+# Or manually create settings file
+echo '{"anthropic_api_key":"sk-ant-..."}' > ~/.rigour/settings.json
+```
+
+Get your API key from the [Anthropic Console](https://console.anthropic.com).
+
+### Step 3: Enable in Configuration
+
+Edit your `rigour.yml`:
+
+```yaml
+gates:
+  deep:
+    enabled: true
+    provider: anthropic
+    model: claude-opus-4-6
+    checks:
+      - solid_principles
+      - design_patterns
+      - error_handling
+      - concurrency
+      - testing
+      - architecture
+      - language_idioms
+      - performance
+      - code_smells
+```
+
+### Step 4: Run Deep Analysis
+
+```bash
+# Run with deep analysis enabled
+npx rigour check --deep
+
+# Or use specific provider/model
+npx rigour check --deep --provider anthropic --model claude-opus-4-6
+```
+
+Deep Analysis findings are verified against the AST to eliminate hallucinations. See [Deep Analysis](/concepts/deep-analysis) for full documentation.
+
+---
+
 ## Next Steps
 - **[Real-Time Hooks](/concepts/hooks)**: Set up hooks for Claude, Cursor, Cline, or Windsurf.
 - **[CLI Commands](/cli/commands)**: Full reference of all options.
 - **[OWASP Coverage](/concepts/owasp-coverage)**: See how Rigour covers all 10 OWASP LLM risks.
+- **[Deep Analysis](/concepts/deep-analysis)**: Enable LLM-powered semantic analysis of 40+ code quality categories.
 - **[Governance Studio](/concepts/governance-studio)**: How to use the visual control room.
 - **[MCP Server](/mcp/mcp-server)**: Connecting Rigour directly to Cursor or Claude Code.

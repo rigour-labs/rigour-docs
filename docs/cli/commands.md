@@ -21,6 +21,10 @@ rigour check [options]
 | `--ci` | CI mode with strict exit codes |
 | `--json` | Output results as JSON. **Note**: In v2.1+, all debug/info logs are silenced from `stdout` when this flag is active, ensuring `stdout` contains valid, parsable JSON. |
 | `--config <path>` | Path to a custom `rigour.yml` or `rigour_config.yaml`. Useful for ephemeral benchmarking or CI overrides. |
+| `--deep` | Enable LLM-powered deep analysis |
+| `--provider <name>` | Deep analysis provider: `anthropic`, `openai`, `local` |
+| `--agents <n>` | Number of parallel analysis agents (cloud only) |
+| `--model <name>` | Override model for deep analysis |
 
 ### Examples
 
@@ -103,6 +107,69 @@ Many framework CLI tools (like `create-next-app` or `npm init vite`) require the
 
 **If you already initialized Rigour**:
 Simply move `rigour.yml` and the `docs/` folder aside temporarily, run your framework command, and move them back. AI Agents using Rigour have a built-in workflow to handle this automatically.
+
+---
+
+## `rigour setup`
+
+Check system readiness for all Rigour features and configure API keys for Deep Analysis.
+
+```bash
+rigour setup [options]
+```
+
+### What It Shows
+
+Running `rigour setup` displays:
+- **Installation Status**: CLI version and installation path
+- **API Keys**: Configured providers and key status
+- **Deep Analysis Readiness**: LLM provider health and model availability
+- **Quick Setup Commands**: Copy-paste instructions for missing configuration
+
+### Options
+
+| Flag | Description |
+|------|-------------|
+| `--show-keys` | Display configured API key status (masked) |
+| `--configure <provider>` | Interactively configure a specific provider |
+
+### Examples
+
+```bash
+# Check system readiness
+rigour setup
+
+# Configure Anthropic API key
+rigour setup --configure anthropic
+
+# View all configured providers
+rigour setup --show-keys
+```
+
+### Output Example
+
+```
+Rigour System Readiness
+=======================
+
+Installation
+  ✓ CLI v2.20.0 installed globally
+  ✓ Node.js 22.x available
+  ✓ Git repository detected
+
+Settings & API Keys
+  ✓ ~/.rigour/settings.json found
+  ✓ anthropic_api_key: configured
+  ✓ openai_api_key: not configured
+
+Deep Analysis Readiness
+  ✓ Anthropic (claude-opus-4-6): ready
+  ✗ OpenAI (gpt-4): not configured
+
+Quick Setup
+  To add OpenAI support, run:
+    rigour setup --configure openai
+```
 
 ---
 

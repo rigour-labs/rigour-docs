@@ -275,6 +275,56 @@ Supported: JavaScript/TypeScript, Python, Go, Ruby, C#, Java. See [AI-Native Gat
 
 ---
 
+### `gates.deep` (v2.20+)
+**Description**: Configures LLM-powered deep analysis with 40+ code quality categories.
+
+```yaml
+gates:
+  deep:
+    enabled: true
+    provider: anthropic
+    model: claude-opus-4-6
+    agents: 1
+    checks:
+      - solid_principles
+      - design_patterns
+      - dry_principle
+      - error_handling
+      - concurrency
+      - testing
+      - architecture
+      - language_idioms
+      - performance
+      - code_smells
+    maxTokens: 4000
+    temperature: 0.3
+    timeoutMs: 30000
+```
+
+| Option | Type | Default | Description |
+|:---|:---:|:---:|:---|
+| `enabled` | `boolean` | `false` | Enable LLM-powered deep analysis. Requires API key configuration. |
+| `provider` | `string` | `anthropic` | LLM provider: `anthropic`, `openai`, `local` |
+| `model` | `string` | `claude-opus-4-6` | Model to use for analysis. Provider-specific. |
+| `agents` | `number` | `1` | Number of parallel analysis agents (cloud only, `1` for local). |
+| `checks` | `string[]` | [all] | Categories to analyze: `solid_principles`, `design_patterns`, `dry_principle`, `error_handling`, `concurrency`, `testing`, `architecture`, `language_idioms`, `performance`, `code_smells`. |
+| `maxTokens` | `number` | `4000` | Maximum tokens per analysis request. |
+| `temperature` | `number` | `0.3` | LLM temperature (0.0-1.0). Lower = more deterministic. |
+| `timeoutMs` | `number` | `30000` | Timeout in milliseconds per check. |
+
+**API Key Configuration**: Store credentials in `~/.rigour/settings.json`:
+```json
+{
+  "anthropic_api_key": "sk-ant-...",
+  "openai_api_key": "sk-...",
+  "local_api_endpoint": "http://localhost:8000"
+}
+```
+
+See [Deep Analysis](/concepts/deep-analysis) for detailed documentation.
+
+---
+
 ## Universal Language Support
 Rigour provides built-in, syntax-aware AST analysis for:
 **TypeScript, JavaScript, Go, Rust, Python, Java, C#, C, C++, PHP, Swift, and Kotlin.**

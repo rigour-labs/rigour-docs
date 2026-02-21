@@ -86,16 +86,20 @@ gates:
 
 Detects import statements that reference packages not present in the project's dependency manifest. This is one of the most common AI coding mistakes — the model "hallucinating" a package that doesn't exist.
 
-### Supported Ecosystems
+### Supported Languages (8 ecosystems)
 
-| Language | Manifest File | Import Pattern |
-|:---------|:-------------|:--------------|
-| **JavaScript/TypeScript** | `package.json` | `import ... from`, `require()` |
-| **Python** | `requirements.txt`, `pyproject.toml` | `import`, `from ... import` |
-| **Go** | `go.mod` | `import "..."` |
-| **Ruby** | `Gemfile` | `require`, `gem` |
-| **C#** | `*.csproj` | `using` |
-| **Java** | `pom.xml`, `build.gradle` | `import` |
+| Language | Stdlib Whitelist | Dependency Manifest | Import Patterns |
+|:---------|:----------------|:-------------------|:---------------|
+| **JavaScript/TypeScript** | Node.js 22.x builtins (45+ modules) | `package.json` + `node_modules` | `import ... from`, `require()`, `export from` |
+| **Python** | 160+ stdlib modules (3.12+) | Local module resolution | `import`, `from ... import` |
+| **Go** | 150+ stdlib packages (1.22+) | `go.mod` module path, aliased imports | `import "..."`, `import alias "..."` |
+| **Ruby** | 80+ stdlib gems (Ruby 3.3+ MRI) | `Gemfile`, `.gemspec` (`add_dependency`) | `require`, `require_relative` |
+| **C# / .NET** | .NET 8 framework + 30+ ecosystem prefixes | `.csproj` NuGet `PackageReference` | `using`, `using static` |
+| **Rust** | `std`/`core`/`alloc`/`proc_macro` | `Cargo.toml` (handles `-` → `_`) | `use`, `extern crate`, `pub use` |
+| **Java** | `java.*`/`javax.*`/`jakarta.*`/`android.*` | `build.gradle`, `pom.xml` | `import`, `import static` |
+| **Kotlin** | `kotlin.*`/`kotlinx.*` + Java interop | `build.gradle.kts` | `import` |
+
+**False-positive avoidance strategy**: For Ruby, C#, Rust, Java, and Kotlin, the gate only flags imports when dependency context exists (Gemfile, .csproj, Cargo.toml, build.gradle). Without a manifest, no assumptions are made.
 
 ### Configuration
 
@@ -121,3 +125,62 @@ gates:
   hallucinated_imports:
     enabled: false
 ```
+
+---
+
+## Deep Analysis Gate (LLM-Powered)
+
+Beyond pattern-based AI gates, Rigour v2.20+ introduces **Deep Analysis** — an LLM-powered gate that interprets AST facts to detect semantic issues across 40+ code quality categories.
+
+### How It Differs
+
+| Aspect | Pattern-Based Gates | Deep Analysis |
+|:---|:---|:---|
+| **What it checks** | Imports, promises, async safety | SOLID, design patterns, concurrency, testing, architecture |
+| **Input** | Import statements, Promise chains | Full AST + code structure |
+| **Analysis** | Regex + AST pattern matching | LLM semantic interpretation |
+| **Verification** | Direct match | AST verification to drop hallucinations |
+| **Categories** | 2 main patterns | 40+ findable issues |
+| **Cost** | Free | API-based (pay per check) |
+
+### Deep Analysis Categories
+
+Deep Analysis organizes findings across 9 engineering domains:
+- **SOLID Principles**: SRP, OCP, LSP, ISP, DIP violations
+- **Design Patterns**: Factory, Strategy, Observer, Decorator, Singleton, Adapter
+- **DRY Principle**: Duplicated logic, test fixtures, validation
+- **Error Handling**: Missing context, silent swallowing, error propagation
+- **Concurrency**: Race conditions, deadlocks, goroutine leaks, thread safety
+- **Testing**: Untested paths, coverage gaps, flaky tests, isolation issues
+- **Architecture**: Circular dependencies, leaky abstractions, layer violations
+- **Language Idioms**: Go error checks, TypeScript async/await, Python idioms, Rust unwrap usage
+- **Performance**: N+1 patterns, inefficient algorithms, memory leaks
+
+### Language Support
+
+Deep Analysis has specialized support for all major languages:
+Go, TypeScript/JavaScript, Python, Rust, Java, C#, C/C++, Ruby, PHP, Swift, Kotlin
+
+### Getting Started
+
+Enable Deep Analysis in your config:
+
+```yaml
+gates:
+  deep:
+    enabled: true
+    provider: anthropic
+    model: claude-opus-4-6
+    checks:
+      - solid_principles
+      - design_patterns
+      - error_handling
+      - concurrency
+```
+
+Then run:
+```bash
+rigour check --deep
+```
+
+See [Deep Analysis](/concepts/deep-analysis) for complete documentation, configuration options, multi-agent analysis, and cost considerations.

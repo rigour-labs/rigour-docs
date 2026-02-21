@@ -68,6 +68,7 @@ Hooks run **inside your AI tool** and catch issues before files are even saved:
 *   **Real-Time Hooks**: Catch issues the instant AI writes code — before CI, before review.
 *   **AI Drift Detection**: Hallucinated imports, floating promises, context window artifacts.
 *   **25+ Security Patterns**: SQL injection, XSS, CORS wildcards, ReDoS, hardcoded secrets with CWE IDs.
+*   **Deep Analysis (LLM-Powered)**: 40+ code quality categories analyzed by LLM, verified by AST — SOLID, design patterns, concurrency, architecture.
 *   **Multi-Agent Governance**: Scope conflict detection and verified handoffs for agent teams.
 *   **Industry Presets**: HIPAA, SOC2, FedRAMP compliance gates in one command.
 *   **Score Trending**: Track quality over time with exportable audit reports.

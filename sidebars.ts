@@ -12,6 +12,7 @@ const sidebars: SidebarsConfig = {
         'concepts/hooks',
         'concepts/owasp-coverage',
         'concepts/ai-gates',
+        'concepts/deep-analysis',
         'concepts/governance-studio',
         'cli/index-command',
         'mcp/mcp-server',

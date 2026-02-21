@@ -11,7 +11,7 @@ Syntax-aware validation for code quality. Rigour uses high-fidelity AST parsing 
 Rigour is truly technology-agnostic. We use a hybrid validation engine that combines native structural analysis with universal parsing.
 
 ### AST-Aware Languages
-Rigour provides high-fidelity structural checks (Complexity, Nesting, Params) for all major enterprise languages:
+Rigour provides high-fidelity structural checks (Complexity, Nesting, Params) for all major enterprise languages. All supported languages can be analyzed with Deep Analysis for semantic quality checks.
 
 | Ecosystem | Language | Parser | Status |
 |:---|:---|:---|:---|
@@ -92,7 +92,18 @@ Rigour provides a **double-check** loop. High-complexity files are automatically
 ---
 
 ## Advanced: Logic Extraction
-Rigour's AST engine is designed specifically to help agents **refactor**. 
+Rigour's AST engine is designed specifically to help agents **refactor**.
 
 When a `complexity` gate fails, Rigour doesn't just say "Fix it." The Fix Packet contains instructions like:
 > "Function 'processOrder' is too complex. Extract the 'TaxCalculation' block into a separate function to lower the score."
+
+---
+
+## Deep Analysis Integration
+
+Rigour's **[Deep Analysis](/concepts/deep-analysis)** (v2.20+) layer uses AST facts extracted from the same parsers as input to LLM-powered semantic analysis. The AST provides:
+- Structural facts: function signatures, control flow, dependencies
+- Semantic context: type information, inheritance chains, module boundaries
+- Verification data: for cross-checking LLM findings against actual code structure
+
+Deep Analysis extends AST gates with 40+ quality categories (SOLID principles, design patterns, concurrency, architecture) that benefit from LLM interpretation while remaining grounded in AST verification.
