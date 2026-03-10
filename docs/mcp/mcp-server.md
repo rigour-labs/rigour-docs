@@ -41,19 +41,18 @@ Add this to your `cline_mcp_settings.json`:
 
 ---
 
-## 🛠️ Essential Tools
+## 🛠️ Core Tools
 
 Once connected, your AI agent will automatically use these tools:
 
 | Tool | Purpose |
 |:---|:---|
-| `rigour_check` | Runs all quality gates on your code. |
-| `rigour_run` | **Interceptable** command execution (e.g., tests, deploys). |
-| `rigour_run_supervised` | **Full Supervisor Mode** - iterative loop until gates pass. |
-| `rigour_find_patterns` | Semantic search for codebase patterns. |
-| `rigour_remember` | Persist architectural decisions in memory. |
-| `rigour_recall` | Retrieve stored engineering context. |
-| `rigour_get_fix_packet` | Get precise refactoring instructions on failure. |
+| `rigour_check` | Runs all quality gates on your code (requires `rigour.yml`). |
+| `rigour_scan` | **Zero-config scan** — auto-detects stack, no `rigour.yml` needed. |
+| `rigour_explain` | Get detailed explanation of validation results. |
+| `rigour_learn` | Teach Rigour patterns from failures — brain learns and reinforces over time. |
+| `rigour_recall` | Retrieve stored engineering context and learned patterns. |
+| `rigour_status` | Show current project status — score, patterns, config. |
 
 ### New Tools (v2.14+ – Frontier Model Support)
 

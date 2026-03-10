@@ -23,12 +23,12 @@ Watch an AI agent write flawed code, Rigour hooks catch each issue **in real tim
 
 ---
 
-## Quick Start (3 Commands)
+## Quick Start
 
 ```bash
-npx @rigour-labs/cli init          # auto-detects your stack + IDE
-npx @rigour-labs/cli check         # run all quality gates
-npx @rigour-labs/cli hooks init    # install real-time hooks
+npx @rigour-labs/cli scan              # zero-config — auto-detects stack, runs 27+ gates
+npx @rigour-labs/cli init              # create rigour.yml + install hooks
+npx @rigour-labs/cli hooks init        # install real-time hooks for your AI tool
 ```
 
 ---
@@ -43,6 +43,9 @@ Hooks run **inside your AI tool** and catch issues before files are even saved:
 | **Cursor** | `.cursor/hooks.json` | On save |
 | **Cline** | `.cline/hooks.json` | On file change |
 | **Windsurf** | `.windsurf/hooks.json` | On save |
+| **Aider** | `.aider.conf.yml` | On file write |
+| **Copilot** | `.github/copilot-hooks.json` | On save |
+| **RooCode** | `.roo/hooks.json` | On file change |
 
 ---
 
@@ -67,8 +70,9 @@ Hooks run **inside your AI tool** and catch issues before files are even saved:
 
 *   **Real-Time Hooks**: Catch issues the instant AI writes code — before CI, before review.
 *   **AI Drift Detection**: Hallucinated imports, floating promises, context window artifacts.
-*   **25+ Security Patterns**: SQL injection, XSS, CORS wildcards, ReDoS, hardcoded secrets with CWE IDs.
-*   **Deep Analysis (LLM-Powered)**: 40+ code quality categories analyzed by LLM, verified by AST — SOLID, design patterns, concurrency, architecture.
+*   **27+ Quality Gates**: 11 AI-drift, 11 traditional, 3 governance/multi-agent, 1 deep-analysis — SQL injection, XSS, CORS wildcards, ReDoS, hardcoded secrets with CWE IDs.
+*   **Deep Analysis (Local LLM)**: 40+ code quality categories analyzed by a local LLM (Qwen2.5-Coder), verified by AST — SOLID, design patterns, concurrency, architecture. No API key needed.
+*   **Incremental Cache**: Cross-run file change detection — if no files changed, results return instantly (~50ms).
 *   **Multi-Agent Governance**: Scope conflict detection and verified handoffs for agent teams.
 *   **Industry Presets**: HIPAA, SOC2, FedRAMP compliance gates in one command.
 *   **Score Trending**: Track quality over time with exportable audit reports.
@@ -83,6 +87,18 @@ Hooks run **inside your AI tool** and catch issues before files are even saved:
 *   **Air-Gapped Sync**: The "Local Bridge" between your IDE and Studio happens entirely on your local filesystem.
 
 *This isn't just a feature — it's our trust moat.*
+
+---
+
+## Rigovo Ecosystem
+
+Rigour is part of the **Rigovo AI-Native Engineering Platform**:
+
+| Product | What it does | Link |
+|---|---|---|
+| **Rigour** | Quality gates for AI-generated code (27+ gates + local LLM) | [GitHub](https://github.com/rigour-labs/rigour) |
+| **Rigovo HR** | AI-powered technical hiring — Maya AI interviewer, 15-signal verification | [rigovo.com](https://rigovo.com) |
+| **Rigovo Virtual Team** | Multi-agent software delivery with deterministic quality gates | [GitHub](https://github.com/rigovo/rigovo-virtual-team) |
 
 ---
 

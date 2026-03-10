@@ -6,13 +6,49 @@ sidebar_position: 1
 
 Complete reference for all Rigour CLI commands.
 
+## `rigour scan`
+
+**Zero-config quality scan.** Auto-detects your stack, paradigm, and coding style — no `rigour.yml` needed.
+
+```bash
+rigour scan [options]
+```
+
+`scan` uses the `DiscoveryService` to identify your project (language, framework, paradigm) and applies the best-fit preset automatically. This is the fastest way to evaluate any repo.
+
+### Options
+
+| Flag | Description |
+|------|-------------|
+| `--json` | Output results as JSON. The JSON wraps the report: `{ mode, preset, paradigm, stack, report }`. |
+| `--deep` | Enable LLM-powered deep analysis |
+| `--provider <name>` | Deep analysis provider: `local` (default), `anthropic`, `openai` |
+| `--model <name>` | Override model for deep analysis |
+
+### Examples
+
+```bash
+# Scan any project — zero config
+npx rigour scan
+
+# JSON output for CI or programmatic use
+npx rigour scan --json
+
+# With local LLM deep analysis
+npx rigour scan --deep
+```
+
+---
+
 ## `rigour check`
 
-Validate staged changes against safety rules.
+Validate code against safety rules using your `rigour.yml` configuration.
 
 ```bash
 rigour check [options]
 ```
+
+> **Note:** `rigour check` requires a `rigour.yml` in the project. Use `rigour scan` for zero-config analysis or `rigour init` to create a config.
 
 ### Options
 
@@ -22,9 +58,10 @@ rigour check [options]
 | `--json` | Output results as JSON. **Note**: In v2.1+, all debug/info logs are silenced from `stdout` when this flag is active, ensuring `stdout` contains valid, parsable JSON. |
 | `--config <path>` | Path to a custom `rigour.yml` or `rigour_config.yaml`. Useful for ephemeral benchmarking or CI overrides. |
 | `--deep` | Enable LLM-powered deep analysis |
-| `--provider <name>` | Deep analysis provider: `anthropic`, `openai`, `local` |
+| `--provider <name>` | Deep analysis provider: `local` (default), `anthropic`, `openai` |
 | `--agents <n>` | Number of parallel analysis agents (cloud only) |
 | `--model <name>` | Override model for deep analysis |
+| `--no-cache` | Force full scan even if no files changed (skips incremental cache) |
 
 ### Examples
 
@@ -37,6 +74,9 @@ npx rigour check --ci --json
 
 # Custom config
 npx rigour check --config ./custom-rigour.yaml
+
+# Force full re-scan (skip cache)
+npx rigour check --no-cache
 ```
 
 ---
@@ -315,7 +355,7 @@ npx rigour hooks init [options]
 
 | Flag | Description |
 |------|-------------|
-| `--tool <name>` | Target tool: `claude`, `cursor`, `cline`, `windsurf` (auto-detected if not specified) |
+| `--tool <name>` | Target tool: `claude`, `cursor`, `cline`, `windsurf`, `aider`, `copilot`, `roocode` (auto-detected if not specified) |
 | `--force` | Overwrite existing hook configuration |
 | `--dry-run` | Preview changes without writing files |
 
@@ -348,8 +388,9 @@ npx rigour demo [options]
 
 | Flag | Default | Description |
 |:---|:---:|:---|
-| `--cinematic` | `false` | Full cinematic mode: hooks → gates → fix → score improvement |
+| `--cinematic` | `false` | Full cinematic mode: hooks → gates → fix → cache hit → score improvement |
 | `--hooks` | `false` | Hooks-only simulation showing real-time interception |
+| `--repo <url>` | none | Clone and scan a public GitHub repo |
 | `--speed <level>` | `normal` | Animation speed: `fast`, `normal`, `slow` |
 
 ### Examples

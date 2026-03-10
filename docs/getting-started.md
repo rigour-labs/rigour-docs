@@ -30,17 +30,19 @@ npm install -g @rigour-labs/cli
 
 ---
 
-## 2. Project Setup (3 Commands)
+## 2. Project Setup
 
 ```bash
-npx @rigour-labs/cli init          # auto-detects stack, IDE, installs hooks
-npx @rigour-labs/cli check         # run all quality gates
-npx @rigour-labs/cli hooks init    # install real-time hooks for your AI tool
+npx @rigour-labs/cli scan              # zero-config scan — auto-detects stack, runs 27+ gates
+npx @rigour-labs/cli init              # create rigour.yml + install hooks
+npx @rigour-labs/cli hooks init        # install real-time hooks for your AI tool
 ```
 
-`rigour init` automatically:
+**`rigour scan`** works with zero config — it auto-detects your language, framework, and paradigm via the `DiscoveryService`. No `rigour.yml` needed.
+
+**`rigour init`** creates a `rigour.yml` and automatically:
 - Detects your project role (API, UI, infra, data) and paradigm (OOP, functional)
-- Creates IDE-specific config files (Claude, Cursor, Cline, Windsurf, Gemini, Codex)
+- Creates IDE-specific config files (Claude Code, Cursor, Cline, Windsurf, Aider, Copilot, RooCode)
 - Installs real-time hooks for your detected AI tool
 - Configures `.gitignore` with Rigour artifacts
 
@@ -79,29 +81,34 @@ npx @rigour-labs/cli demo --speed fast    # speed up for quick demos
 
 ## 5. Deep Analysis (Optional)
 
-Deep Analysis uses LLM interpretation to check code against 40+ quality categories (SOLID, design patterns, concurrency, architecture). Enable it for advanced semantic analysis:
+Deep Analysis uses LLM interpretation to check code against 40+ quality categories (SOLID, design patterns, concurrency, architecture).
 
-### Step 1: Check System Readiness
+### Local LLM (Recommended — No API Key Needed)
+
+Rigour ships with a local LLM option (Qwen2.5-Coder-0.5B) that runs entirely on your machine. No API key, no cloud, no cost:
 
 ```bash
-rigour setup
+# Auto-downloads model on first run (~350MB)
+npx rigour scan --deep
+npx rigour check --deep --provider local
 ```
 
-This displays your installation status, API key configuration, and deep analysis readiness.
+### Cloud Providers (Alternative)
 
-### Step 2: Configure API Key
+For larger codebases or higher accuracy, use a cloud provider:
 
 ```bash
-# Interactive configuration
+# Check readiness
+rigour setup
+
+# Configure API key
 rigour setup --configure anthropic
 
-# Or manually create settings file
-echo '{"anthropic_api_key":"sk-ant-..."}' > ~/.rigour/settings.json
+# Run with cloud provider
+npx rigour check --deep --provider anthropic --model claude-opus-4-6
 ```
 
-Get your API key from the [Anthropic Console](https://console.anthropic.com).
-
-### Step 3: Enable in Configuration
+### Configuration
 
 Edit your `rigour.yml`:
 
@@ -109,8 +116,8 @@ Edit your `rigour.yml`:
 gates:
   deep:
     enabled: true
-    provider: anthropic
-    model: claude-opus-4-6
+    provider: local          # local (default), anthropic, openai
+    model: Qwen2.5-Coder-0.5B
     checks:
       - solid_principles
       - design_patterns
@@ -123,24 +130,14 @@ gates:
       - code_smells
 ```
 
-### Step 4: Run Deep Analysis
-
-```bash
-# Run with deep analysis enabled
-npx rigour check --deep
-
-# Or use specific provider/model
-npx rigour check --deep --provider anthropic --model claude-opus-4-6
-```
-
 Deep Analysis findings are verified against the AST to eliminate hallucinations. See [Deep Analysis](/concepts/deep-analysis) for full documentation.
 
 ---
 
 ## Next Steps
-- **[Real-Time Hooks](/concepts/hooks)**: Set up hooks for Claude, Cursor, Cline, or Windsurf.
-- **[CLI Commands](/cli/commands)**: Full reference of all options.
+- **[Real-Time Hooks](/concepts/hooks)**: Set up hooks for Claude Code, Cursor, Cline, Windsurf, Aider, Copilot, or RooCode.
+- **[CLI Commands](/cli/commands)**: Full reference of all commands including `scan`, `check`, `demo`.
 - **[OWASP Coverage](/concepts/owasp-coverage)**: See how Rigour covers all 10 OWASP LLM risks.
-- **[Deep Analysis](/concepts/deep-analysis)**: Enable LLM-powered semantic analysis of 40+ code quality categories.
+- **[Deep Analysis](/concepts/deep-analysis)**: Local LLM (Qwen2.5-Coder) or cloud-powered semantic analysis of 40+ categories.
 - **[Governance Studio](/concepts/governance-studio)**: How to use the visual control room.
 - **[MCP Server](/mcp/mcp-server)**: Connecting Rigour directly to Cursor or Claude Code.
